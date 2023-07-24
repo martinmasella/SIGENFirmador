@@ -111,6 +111,8 @@ namespace SIGENFirmador
                     " el " + DateTime.Now.ToLongDateString() + " a las " + DateTime.Now.ToLongTimeString();
                 appearance.SetVisibleSignature(new iTextSharp.text.Rectangle(llx, lly, urx, ury), 1, "Firma_" + rnd.ToString());
                 
+                //Esta línea bloquea completamente al documento.
+                //Debería agregar un check para que el usuario indique si quiere que esto suceda.
                 appearance.CertificationLevel = PdfSignatureAppearance.CERTIFIED_NO_CHANGES_ALLOWED;
 
                 if (bFlag == false)
