@@ -903,7 +903,12 @@ namespace SIGENFirmador
 
             pdfDoc.Close();
         }
-}
+
+        private void lnkSourceCode_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/martinmasella/SIGENFirmador");
+        }
+    }
     class MySplitter : PdfSplitter
     {
         public MySplitter(iText.Kernel.Pdf.PdfDocument pdfDocument) : base(pdfDocument)

@@ -42,6 +42,7 @@ namespace SIGENFirmador
             this.dlgTrozarDestino = new System.Windows.Forms.SaveFileDialog();
             this.dlgOCRDestino = new System.Windows.Forms.SaveFileDialog();
             this.btnTest = new System.Windows.Forms.Button();
+            this.lnkSourceCode = new System.Windows.Forms.LinkLabel();
             this.panelFusionador = new SIGENFirmador.PanelFirm();
             this.label14 = new System.Windows.Forms.Label();
             this.chkSelFus = new System.Windows.Forms.CheckBox();
@@ -170,7 +171,7 @@ namespace SIGENFirmador
             // 
             this.pictureBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(93)))), ((int)(((byte)(23)))), ((int)(((byte)(175)))));
             this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-            this.pictureBox4.Location = new System.Drawing.Point(1053, 22);
+            this.pictureBox4.Location = new System.Drawing.Point(1053, 14);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(100, 45);
             this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -222,6 +223,19 @@ namespace SIGENFirmador
             this.btnTest.Text = "Test";
             this.btnTest.UseVisualStyleBackColor = true;
             this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            // 
+            // lnkSourceCode
+            // 
+            this.lnkSourceCode.AutoSize = true;
+            this.lnkSourceCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(93)))), ((int)(((byte)(23)))), ((int)(((byte)(175)))));
+            this.lnkSourceCode.LinkColor = System.Drawing.SystemColors.ButtonFace;
+            this.lnkSourceCode.Location = new System.Drawing.Point(1058, 63);
+            this.lnkSourceCode.Name = "lnkSourceCode";
+            this.lnkSourceCode.Size = new System.Drawing.Size(91, 13);
+            this.lnkSourceCode.TabIndex = 31;
+            this.lnkSourceCode.TabStop = true;
+            this.lnkSourceCode.Text = "Ver código fuente";
+            this.lnkSourceCode.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkSourceCode_LinkClicked);
             // 
             // panelFusionador
             // 
@@ -992,6 +1006,7 @@ namespace SIGENFirmador
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1370, 749);
+            this.Controls.Add(this.lnkSourceCode);
             this.Controls.Add(this.btnTest);
             this.Controls.Add(this.panelFusionador);
             this.Controls.Add(this.panelDivisor);
@@ -1029,6 +1044,7 @@ namespace SIGENFirmador
             this.panelEmpaquetador.ResumeLayout(false);
             this.panelEmpaquetador.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -1114,6 +1130,7 @@ namespace SIGENFirmador
         private System.Windows.Forms.Button btnTest;
         private System.Windows.Forms.TextBox txtComentarioPack;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.LinkLabel lnkSourceCode;
     }
 }
 
