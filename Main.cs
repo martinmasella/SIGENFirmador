@@ -21,6 +21,7 @@ using iText.Pdfocr.Tesseract4;
 using PdfWriter = iText.Kernel.Pdf.PdfWriter;
 using iText.Kernel.Utils;
 using iText.Pdfa;
+using iText.Forms;
 
 namespace SIGENFirmador
 {
@@ -649,54 +650,71 @@ namespace SIGENFirmador
         }
 
         private void btnFusion_Click(object sender, EventArgs e)
-            {
-                string strArchivoFus;
+        {
+            string strArchivoFus;
 
-                if (dlgArchivoFus.ShowDialog() == DialogResult.OK)
+            if (dlgArchivoFus.ShowDialog() == DialogResult.OK)
+            {
+                strArchivoFus = dlgArchivoFus.FileName;
+            }
+            else
+            {
+                return;
+            }
+
+            if (File.Exists(strArchivoFus))
+            {
+                DialogResult result = MessageBox.Show("El archivo indicado para contener el resultado de la unificación ya existe. \n ¿Desea sobreescribirlo?", "Confirma", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
                 {
-                    strArchivoFus = dlgArchivoFus.FileName;
+                    File.Delete(strArchivoFus);
                 }
                 else
                 {
                     return;
                 }
-
-                if (File.Exists(strArchivoFus))
-                {
-                    DialogResult result = MessageBox.Show("El archivo indicado para contener el resultado de la unificación ya existe. \n ¿Desea sobreescribirlo?", "Confirma", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                    if (result == DialogResult.Yes)
-                    {
-                        File.Delete(strArchivoFus);
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-
-
-
-                var pdfList = new List<byte[]> { };
-
-                pgsFus.Minimum = 0;
-                pgsFus.Value = 0;
-                pgsFus.Maximum = lvwArchivosFus.CheckedItems.Count;
-                pgsFus.Visible = true;
-
-                foreach (ListViewItem item in lvwArchivosFus.CheckedItems)
-                {
-                    pdfList.Add(File.ReadAllBytes(tvwCarpetasFus.SelectedNode.FullPath + @"\" + item.Text));
-                    pgsFus.Value++;
-                    Application.DoEvents();
-                }
-
-                File.WriteAllBytes(strArchivoFus, Combine(pdfList));
-
-                if (chkAbrirFus.Checked)
-                {
-                    AbrirPDF(strArchivoFus);
-                }
             }
+
+
+
+            var pdfList = new List<byte[]> { };
+
+            pgsFus.Minimum = 0;
+            pgsFus.Value = 0;
+            pgsFus.Maximum = lvwArchivosFus.CheckedItems.Count;
+            pgsFus.Visible = true;
+
+            foreach (ListViewItem item in lvwArchivosFus.CheckedItems)
+            {
+                pdfList.Add(File.ReadAllBytes(tvwCarpetasFus.SelectedNode.FullPath + @"\" + item.Text));
+                pgsFus.Value++;
+                Application.DoEvents();
+            }
+
+            //File.WriteAllBytes(strArchivoFus, Combine(pdfList));
+
+            pgsFus.Value = 0;
+            IDictionary<string, iText.Kernel.Pdf.PdfDocument> ListaPDFs=new SortedDictionary<string, iText.Kernel.Pdf.PdfDocument>();
+            foreach (ListViewItem item in lvwArchivosFus.CheckedItems)
+            {
+                ListaPDFs.Add(item.Text, new iText.Kernel.Pdf.PdfDocument(new iText.Kernel.Pdf.PdfReader(tvwCarpetasFus.SelectedNode.FullPath + @"\" + item.Text)));
+                pgsFus.Value++;
+                Application.DoEvents();
+            }
+            IDictionary<int, string> toc = new SortedDictionary<int, string>();
+
+
+            iText.Kernel.Pdf.PdfDocument pdfMerged = new iText.Kernel.Pdf.PdfDocument(new PdfWriter(strArchivoFus));
+            pdfMerged.InitializeOutlines();
+            PdfPageFormCopier formCopier = new PdfPageFormCopier();
+            
+
+
+            if (chkAbrirFus.Checked)
+            {
+                AbrirPDF(strArchivoFus);
+            }
+        }
 
         private void chkSelPack_CheckedChanged(object sender, EventArgs e)
         {
