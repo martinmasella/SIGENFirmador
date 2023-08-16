@@ -22,6 +22,10 @@ using PdfWriter = iText.Kernel.Pdf.PdfWriter;
 using iText.Kernel.Utils;
 using iText.Pdfa;
 using iText.Forms;
+using iText.Layout.Element;
+using iText.Layout;
+using PdfReader = iText.Kernel.Pdf.PdfReader;
+using iText.Kernel.Pdf.Canvas.Draw;
 
 namespace SIGENFirmador
 {
@@ -701,14 +705,83 @@ namespace SIGENFirmador
                 pgsFus.Value++;
                 Application.DoEvents();
             }
+            
             IDictionary<int, string> toc = new SortedDictionary<int, string>();
-
-
             iText.Kernel.Pdf.PdfDocument pdfMerged = new iText.Kernel.Pdf.PdfDocument(new PdfWriter(strArchivoFus));
+            Document doc = new Document(pdfMerged);
+
+
             pdfMerged.InitializeOutlines();
             PdfPageFormCopier formCopier = new PdfPageFormCopier();
-            
+            int page = 1;
+            foreach (KeyValuePair<string, iText.Kernel.Pdf.PdfDocument> entry in ListaPDFs)
+            {
+                iText.Kernel.Pdf.PdfDocument srcDoc = entry.Value;
+                int totPages = srcDoc.GetNumberOfPages();
+                var strDoc = entry.Key;
+                toc.Add(page, entry.Key);
 
+                for (int i = 1; i<= totPages; i++, page++)
+                {
+                    iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Format("Página %d", page));
+                    srcDoc.CopyPagesTo(i,i,pdfMerged,formCopier);
+                    if (i == 1)
+                    {
+                        text.SetDestination("p" + page);
+                    }
+
+                    doc.Add(new Paragraph(text)
+                        .SetFixedPosition(page, 549,810,40)
+                        .SetMargin(0)
+                        .SetMultipliedLeading(1));
+                }
+            }
+
+            iText.Kernel.Pdf.PdfDocument tocDoc = new iText.Kernel.Pdf.PdfDocument(new iText.Kernel.Pdf.PdfWriter(cteArchivoTemporal));
+            Document altDoc = new Document(tocDoc);
+            tocDoc.SetDefaultPageSize(iText.Kernel.Geom.PageSize.A4);
+            tocDoc.SetTagged();
+            tocDoc.GetDocumentInfo().SetAuthor("SIGEN");
+
+            iText.Layout.Element.Paragraph Titulo;
+
+            Titulo = new iText.Layout.Element.Paragraph("Tabla de Contenidos").SetFontSize(14);
+            altDoc.Add(Titulo);
+            altDoc.Close();
+            tocDoc.Close();
+            tocDoc = new iText.Kernel.Pdf.PdfDocument(new PdfReader(cteArchivoTemporal));
+    
+
+            tocDoc.CopyPagesTo(1,1,pdfMerged,formCopier);
+
+            float tocYCoordinate = 750;
+            float tocXCoordinate = doc.GetLeftMargin();
+            float tocWidth = pdfMerged.GetDefaultPageSize().GetWidth() - doc.GetLeftMargin() - doc.GetRightMargin();
+            PdfAction acc = new PdfAction();
+            
+            foreach (KeyValuePair<int, String> entry in toc)
+            {
+                Paragraph p = new Paragraph();
+                p.AddTabStops(new TabStop(500, iText.Layout.Properties.TabAlignment.LEFT, new DashedLine()));
+                p.Add(entry.Value);
+                p.Add(new Tab());
+                p.Add(entry.Key.ToString());
+                //p.SetAction(iText.Kernel.Pdf.PdfAction.CreateGoto("p" + entry.Key));
+                doc.Add(p
+                        .SetFixedPosition(pdfMerged.GetNumberOfPages(), tocXCoordinate, tocYCoordinate, tocWidth)
+                        .SetMargin(0)
+                        .SetMultipliedLeading(1));
+
+                tocYCoordinate -= 20;
+            }
+
+
+            foreach (iText.Kernel.Pdf.PdfDocument srcDoc in ListaPDFs.Values)
+            {
+                srcDoc.Close();
+            }
+            tocDoc.Close();
+            doc.Close();
 
             if (chkAbrirFus.Checked)
             {
