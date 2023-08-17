@@ -679,8 +679,6 @@ namespace SIGENFirmador
                 }
             }
 
-
-
             var pdfList = new List<byte[]> { };
 
             pgsFus.Minimum = 0;
@@ -688,14 +686,15 @@ namespace SIGENFirmador
             pgsFus.Maximum = lvwArchivosFus.CheckedItems.Count;
             pgsFus.Visible = true;
 
+            /*
             foreach (ListViewItem item in lvwArchivosFus.CheckedItems)
             {
                 pdfList.Add(File.ReadAllBytes(tvwCarpetasFus.SelectedNode.FullPath + @"\" + item.Text));
                 pgsFus.Value++;
                 Application.DoEvents();
             }
-
-            //File.WriteAllBytes(strArchivoFus, Combine(pdfList));
+            File.WriteAllBytes(strArchivoFus, Combine(pdfList));  Con este método se pierden los comments.
+            */
 
             pgsFus.Value = 0;
             IDictionary<string, iText.Kernel.Pdf.PdfDocument> ListaPDFs=new SortedDictionary<string, iText.Kernel.Pdf.PdfDocument>();
@@ -709,7 +708,6 @@ namespace SIGENFirmador
             IDictionary<int, string> toc = new SortedDictionary<int, string>();
             iText.Kernel.Pdf.PdfDocument pdfMerged = new iText.Kernel.Pdf.PdfDocument(new PdfWriter(strArchivoFus));
             Document doc = new Document(pdfMerged);
-
 
             pdfMerged.InitializeOutlines();
             PdfPageFormCopier formCopier = new PdfPageFormCopier();
@@ -757,7 +755,6 @@ namespace SIGENFirmador
             float tocYCoordinate = 750;
             float tocXCoordinate = doc.GetLeftMargin();
             float tocWidth = pdfMerged.GetDefaultPageSize().GetWidth() - doc.GetLeftMargin() - doc.GetRightMargin();
-            PdfAction acc = new PdfAction();
             
             foreach (KeyValuePair<int, String> entry in toc)
             {
@@ -766,7 +763,8 @@ namespace SIGENFirmador
                 p.Add(entry.Value);
                 p.Add(new Tab());
                 p.Add(entry.Key.ToString());
-                //p.SetAction(iText.Kernel.Pdf.PdfAction.CreateGoto("p" + entry.Key));
+
+                p.SetAction(iText.Kernel.Pdf.Action.PdfAction.CreateGoTo("p" + entry.Key));
                 doc.Add(p
                         .SetFixedPosition(pdfMerged.GetNumberOfPages(), tocXCoordinate, tocYCoordinate, tocWidth)
                         .SetMargin(0)
