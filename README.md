@@ -3,7 +3,7 @@ Utilidad para tratamiento de archivos PDF
 
 ## 📄 Descripción
 
-Este utilitario permite manipular archivos PDF utilizando la librería iText.
+Este utilitario permite manipular archivos PDF utilizando las librerías iText y Tesseract.
 
 
 ## 🛠 Instalación
@@ -15,7 +15,7 @@ Este utilitario permite manipular archivos PDF utilizando la librería iText.
 // TODO:
 
 ## 😋 Contribuidores
-
+Juan Luis Mango, Martín Capo y Magalí Raymundo
 
 
 ## ⚖️ License
