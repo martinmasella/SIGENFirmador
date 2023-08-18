@@ -671,6 +671,7 @@ namespace SIGENFirmador
                 DialogResult result = MessageBox.Show("El archivo indicado para contener el resultado de la unificación ya existe. \n ¿Desea sobreescribirlo?", "Confirma", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
                 {
+                    File.Delete(cteArchivoTemporal);
                     File.Delete(strArchivoFus);
                 }
                 else
@@ -679,7 +680,6 @@ namespace SIGENFirmador
                 }
             }
 
-            var pdfList = new List<byte[]> { };
 
             pgsFus.Minimum = 0;
             pgsFus.Value = 0;
@@ -687,6 +687,7 @@ namespace SIGENFirmador
             pgsFus.Visible = true;
 
             /*
+            var pdfList = new List<byte[]> { };
             foreach (ListViewItem item in lvwArchivosFus.CheckedItems)
             {
                 pdfList.Add(File.ReadAllBytes(tvwCarpetasFus.SelectedNode.FullPath + @"\" + item.Text));
@@ -696,7 +697,6 @@ namespace SIGENFirmador
             File.WriteAllBytes(strArchivoFus, Combine(pdfList));  Con este método se pierden los comments.
             */
 
-            pgsFus.Value = 0;
             IDictionary<string, iText.Kernel.Pdf.PdfDocument> ListaPDFs=new SortedDictionary<string, iText.Kernel.Pdf.PdfDocument>();
             foreach (ListViewItem item in lvwArchivosFus.CheckedItems)
             {
@@ -705,23 +705,25 @@ namespace SIGENFirmador
                 Application.DoEvents();
             }
             
-            IDictionary<int, string> toc = new SortedDictionary<int, string>();
             iText.Kernel.Pdf.PdfDocument pdfMerged = new iText.Kernel.Pdf.PdfDocument(new PdfWriter(strArchivoFus));
             Document doc = new Document(pdfMerged);
-
             pdfMerged.InitializeOutlines();
             PdfPageFormCopier formCopier = new PdfPageFormCopier();
+
+            IDictionary<int, string> toc = new SortedDictionary<int, string>();
             int page = 1;
             foreach (KeyValuePair<string, iText.Kernel.Pdf.PdfDocument> entry in ListaPDFs)
             {
                 iText.Kernel.Pdf.PdfDocument srcDoc = entry.Value;
                 int totPages = srcDoc.GetNumberOfPages();
-                var strDoc = entry.Key;
+
+                //var strDoc = entry.Key;
                 toc.Add(page, entry.Key);
 
                 for (int i = 1; i<= totPages; i++, page++)
                 {
-                    iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Format("Página %d", page));
+                    //iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Format("Pag. {0}", page));
+                    iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Empty);
                     srcDoc.CopyPagesTo(i,i,pdfMerged,formCopier);
                     if (i == 1)
                     {
@@ -743,12 +745,11 @@ namespace SIGENFirmador
 
             iText.Layout.Element.Paragraph Titulo;
 
-            Titulo = new iText.Layout.Element.Paragraph("Tabla de Contenidos").SetFontSize(14);
+            Titulo = new iText.Layout.Element.Paragraph("Tabla de archivos incluidos").SetFontSize(14);
             altDoc.Add(Titulo);
             altDoc.Close();
             tocDoc.Close();
             tocDoc = new iText.Kernel.Pdf.PdfDocument(new PdfReader(cteArchivoTemporal));
-    
 
             tocDoc.CopyPagesTo(1,1,pdfMerged,formCopier);
 
@@ -763,13 +764,11 @@ namespace SIGENFirmador
                 p.Add(entry.Value);
                 p.Add(new Tab());
                 p.Add(entry.Key.ToString());
-
                 p.SetAction(iText.Kernel.Pdf.Action.PdfAction.CreateGoTo("p" + entry.Key));
                 doc.Add(p
                         .SetFixedPosition(pdfMerged.GetNumberOfPages(), tocXCoordinate, tocYCoordinate, tocWidth)
                         .SetMargin(0)
                         .SetMultipliedLeading(1));
-
                 tocYCoordinate -= 20;
             }
 
