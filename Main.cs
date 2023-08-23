@@ -745,7 +745,7 @@ namespace SIGENFirmador
 
             iText.Layout.Element.Paragraph Titulo;
 
-            Titulo = new iText.Layout.Element.Paragraph("Tabla de archivos incluidos").SetFontSize(14);
+            Titulo = new iText.Layout.Element.Paragraph("Tabla de documentos incluidos").SetFontSize(14);
             altDoc.Add(Titulo);
             altDoc.Close();
             tocDoc.Close();
