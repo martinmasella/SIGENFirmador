@@ -314,6 +314,7 @@ namespace SIGENFirmador
 
         public byte[] Combine(IEnumerable<byte[]> pdfs)
         {
+            //Este método. si bien funciona, pierde los Acrofields y los Comments.
             using (var writerMemoryStream = new MemoryStream())
             {
                 using (var writer = new PdfWriter(writerMemoryStream))
