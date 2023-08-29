@@ -90,9 +90,9 @@ namespace SIGENFirmador
 
         public void Sign_Remember(String src, String dest, ICollection<Org.BouncyCastle.X509.X509Certificate> chain)
         {
+            //Este método usa la librería iTextSharp5 vieja, debido a que la clase X509Certificate2Signature no fue "porteada" a iText7.
             try
             {
-
                 IExternalSignature pks = new X509Certificate2Signature(Cert,"SHA-1");
 
                 int llx = 40, lly = 120, urx = 200, ury = 40; //Coordenadas para fijar la firma...
@@ -106,11 +106,6 @@ namespace SIGENFirmador
 
                 Random rand = new Random();
                 int rnd = rand.Next(0, 1000);
-                /*
-                appearance.Layer2Text = "Firmado digitalmente por " + Cert.GetNameInfo(X509NameType.SimpleName,false) + " de " +
-                    new Org.BouncyCastle.Asn1.X509.X509Name(Cert.Subject).GetValueList(Org.BouncyCastle.Asn1.X509.X509Name.O).OfType<string>().FirstOrDefault() +
-                    " el " + DateTime.Now.ToLongDateString() + " a las " + DateTime.Now.ToLongTimeString();
-                */
                 appearance.Layer2Text = "Firmado digitalmente por " + Cert.GetNameInfo(X509NameType.SimpleName, false) + " de " +
                     new Org.BouncyCastle.Asn1.X509.X509Name(Cert.Subject).GetValueList(Org.BouncyCastle.Asn1.X509.X509Name.O).OfType<string>().FirstOrDefault() +
                     " el " + DateTime.Now.ToLongDateString() + " a las " + DateTime.Now.ToLongTimeString();
@@ -118,7 +113,7 @@ namespace SIGENFirmador
                 
                 //Esta línea bloquea completamente al documento.
                 //Debería agregar un check para que el usuario indique si quiere que esto suceda.
-                appearance.CertificationLevel = PdfSignatureAppearance.CERTIFIED_NO_CHANGES_ALLOWED;
+                //appearance.CertificationLevel = PdfSignatureAppearance.CERTIFIED_NO_CHANGES_ALLOWED;
 
                 if (bFlag == false)
                 {
@@ -140,8 +135,6 @@ namespace SIGENFirmador
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Error");
-                // MessageBox.Show("Se produjo un error al firmar el archivo " + src , "Firmador SIGEN", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //ToLog("Error firmando archivo: " + src + " - e: " + e.Message + " - " + e.StackTrace);
             }
         }
 
@@ -165,7 +158,6 @@ namespace SIGENFirmador
             {
                 aNode = new TreeNode(subDir.Name, 0, 0);
                 aNode.Tag = subDir;
-                //aNode.ImageKey = "folder";
                 nodeToAddTo.Nodes.Add(aNode);
             }
         }
@@ -194,11 +186,11 @@ namespace SIGENFirmador
                 {
                     item = new ListViewItem(file.Name, 1);
                     subItems = new ListViewItem.ListViewSubItem[]
-                     {
-                        new ListViewItem.ListViewSubItem(item,file.LastWriteTime.ToShortDateString()),
-                         new ListViewItem.ListViewSubItem(item, file.Extension),
-                        new ListViewItem.ListViewSubItem(item, file.Length.ToString())
-                     };
+                        {
+                            new ListViewItem.ListViewSubItem(item,file.LastWriteTime.ToShortDateString()),
+                            new ListViewItem.ListViewSubItem(item, file.Extension),
+                            new ListViewItem.ListViewSubItem(item, file.Length.ToString())
+                        };
                     item.SubItems.AddRange(subItems);
                     lvwArchivosPack.Items.Add(item);
                 }
@@ -231,10 +223,10 @@ namespace SIGENFirmador
                 {
                     item = new ListViewItem(file.Name, 1);
                     subItems = new ListViewItem.ListViewSubItem[]
-                     {
+                    {
                         new ListViewItem.ListViewSubItem(item,file.LastWriteTime.ToShortDateString()),
                         new ListViewItem.ListViewSubItem(item, file.Length.ToString())
-                     };
+                    };
                     item.SubItems.AddRange(subItems);
                     lvwArchivosSign.Items.Add(item);
                 }
@@ -297,7 +289,6 @@ namespace SIGENFirmador
             panelEmpaquetador.Visible = true;
 
             string misdocumentos = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            //misdocumentos = misdocumentos.Insert(2, "\\"); //
             TreeNode nodoPack= new TreeNode(misdocumentos);
             nodoPack.Tag = new DirectoryInfo(misdocumentos);
 
@@ -322,7 +313,6 @@ namespace SIGENFirmador
                     using (var mergedDocument = new iText.Kernel.Pdf.PdfDocument(writer))
                     {
                         var merger = new PdfMerger(mergedDocument);
-
                         foreach (var pdfBytes in pdfs)
                         {
                             using (var copyFromMemoryStream = new MemoryStream(pdfBytes))
@@ -456,13 +446,8 @@ namespace SIGENFirmador
             iText.Layout.Element.Paragraph Parrafo;
 
             Titulo = new iText.Layout.Element.Paragraph("Papeles de trabajo digitales").SetFontSize(14);
-            //Titulo = new iText.Layout.Element.Paragraph("Papeles de Trabajo").SetFontSize(12);
             doc.Add(Titulo);
             
-            /*
-            Titulo = new iText.Layout.Element.Paragraph("Utilidad para tratamiento de documentos digitales").SetFontSize(12);
-            doc.Add(Titulo);
-            */
 
             Titulo = new iText.Layout.Element.Paragraph("Lista de Archivos").SetFontSize(11);
             doc.Add(Titulo);
@@ -523,7 +508,6 @@ namespace SIGENFirmador
                 try
                 {
                     Cert = X509Certificate2UI.SelectFromCollection(fcollection, "Elegir", "Seleccione el certificado que desea utilizar", X509SelectionFlag.SingleSelection)[0];
-                    //textBox1.Text = Cert.RawData.ToString();
                 }
                 catch (Exception ex)
                 {
@@ -550,9 +534,7 @@ namespace SIGENFirmador
                 AbrirPDF(strArchivoPaqueteResultado);
             }
             pgsPack.Visible = false;
-
-        
-    }
+        }
 
         private void btnSign_Click(object sender, EventArgs e)
         {
@@ -565,7 +547,6 @@ namespace SIGENFirmador
                 try
                 {
                     Cert = X509Certificate2UI.SelectFromCollection(fcollection, "Elegir", "Seleccione el certificado que desea utilizar", X509SelectionFlag.SingleSelection)[0];
-                    //textBox1.Text = Cert.RawData.ToString();
                 }
                 catch (Exception ex)
                 {
@@ -601,28 +582,26 @@ namespace SIGENFirmador
                 }
                 MessageBox.Show("Firmado completo", "Ok", MessageBoxButtons.OK);
             }
-
         }
 
         private void btnOCR_Click(object sender, EventArgs e)
         {
+            //ToDo: hacer OCR sobre PDF aparte de JPGs.
+            string OUTPUT_PDF = txtDestinoOCR.Text;
+            Tesseract4OcrEngineProperties tesseract4OcrEngineProperties = new Tesseract4OcrEngineProperties();
+
+            IList<FileInfo> LIST_IMAGES_OCR = new List<FileInfo>();
+            LIST_IMAGES_OCR.Add(new FileInfo(txtOriginalOCR.Text));
+            Tesseract4LibOcrEngine tesseractReader = new Tesseract4LibOcrEngine(tesseract4OcrEngineProperties);
+            tesseract4OcrEngineProperties.SetPathToTessData(new FileInfo(Application.StartupPath + "\\tessdata"));
+
+            var ocrPdfCreator = new OcrPdfCreator(tesseractReader);
+            using (var writer = new PdfWriter(OUTPUT_PDF))
             {
-                string OUTPUT_PDF = txtDestinoOCR.Text;
-                Tesseract4OcrEngineProperties tesseract4OcrEngineProperties = new Tesseract4OcrEngineProperties();
-
-                IList<FileInfo> LIST_IMAGES_OCR = new List<FileInfo>();
-                LIST_IMAGES_OCR.Add(new FileInfo(txtOriginalOCR.Text));
-                Tesseract4LibOcrEngine tesseractReader = new Tesseract4LibOcrEngine(tesseract4OcrEngineProperties);
-                tesseract4OcrEngineProperties.SetPathToTessData(new FileInfo(Application.StartupPath + "\\tessdata"));
-
-                var ocrPdfCreator = new OcrPdfCreator(tesseractReader);
-                using (var writer = new PdfWriter(OUTPUT_PDF))
-                {
-                    ocrPdfCreator.CreatePdf(LIST_IMAGES_OCR, writer).Close();
-                }
-                MessageBox.Show("OCR completo.", "Ok", MessageBoxButtons.OK);
-                AbrirPDF(OUTPUT_PDF);
+                ocrPdfCreator.CreatePdf(LIST_IMAGES_OCR, writer).Close();
             }
+            MessageBox.Show("OCR completo.", "Ok", MessageBoxButtons.OK);
+            AbrirPDF(OUTPUT_PDF);
         }
 
         private void btnSplit2_Click(object sender, EventArgs e)
@@ -681,13 +660,12 @@ namespace SIGENFirmador
                 }
             }
 
-
             pgsFus.Minimum = 0;
             pgsFus.Value = 0;
             pgsFus.Maximum = lvwArchivosFus.CheckedItems.Count;
             pgsFus.Visible = true;
 
-            /*
+            /* Método anterior.
             var pdfList = new List<byte[]> { };
             foreach (ListViewItem item in lvwArchivosFus.CheckedItems)
             {
@@ -718,11 +696,11 @@ namespace SIGENFirmador
                 iText.Kernel.Pdf.PdfDocument srcDoc = entry.Value;
                 int totPages = srcDoc.GetNumberOfPages();
 
-                //var strDoc = entry.Key;
                 toc.Add(page, entry.Key);
 
                 for (int i = 1; i<= totPages; i++, page++)
                 {
+                    //Mejor no numerar las páginas porque el "Pag..." se puede superponer con el contenido.
                     //iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Format("Pag. {0}", page));
                     iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Empty);
                     srcDoc.CopyPagesTo(i,i,pdfMerged,formCopier);
@@ -821,8 +799,6 @@ namespace SIGENFirmador
                     item.Checked = false;
                 }
             }
-
-
         }
 
 
@@ -844,7 +820,6 @@ namespace SIGENFirmador
             }
 
         }
-
 
         private void cboDrivesPack_SelectedIndexChanged_1(object sender, EventArgs e)
         {
@@ -970,6 +945,9 @@ namespace SIGENFirmador
 
         private void btnTest_Click(object sender, EventArgs e)
         {
+            //Método para pruebas.
+
+            //Prueba actual: rotar 90 grados.
             String DEST = @"c:\temp\FazzitoRotado.pdf";
             String SRC = @"c:\temp\Fazzito.pdf";
 
