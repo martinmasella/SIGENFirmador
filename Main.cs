@@ -104,6 +104,7 @@ namespace SIGENFirmador
                 //PdfSigLockDictionary pdfSigLockDictionary = new PdfSigLockDictionary(new PdfSigLockDictionary.LockPermissions)
                 appearance.FieldLockDict = null;
 
+                //Genera un valor random por las dudas que no se superpongan 2 cuadrantes de firma en el mismo form con el mismo name.
                 Random rand = new Random();
                 int rnd = rand.Next(0, 1000);
                 appearance.Layer2Text = "Firmado digitalmente por " + Cert.GetNameInfo(X509NameType.SimpleName, false) + " de " +
@@ -113,6 +114,7 @@ namespace SIGENFirmador
                 
                 //Esta línea bloquea completamente al documento.
                 //Debería agregar un check para que el usuario indique si quiere que esto suceda.
+                //Para ello debería también parametrizar el método ya que lo usan 2 funciones.
                 //appearance.CertificationLevel = PdfSignatureAppearance.CERTIFIED_NO_CHANGES_ALLOWED;
 
                 if (bFlag == false)
