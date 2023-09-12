@@ -31,7 +31,7 @@ namespace SIGENFirmador
 {
     public partial class Main : Form
     {
-        public X509Certificate2 Cert;
+g        public X509Certificate2 Cert;
         private string strArchivoPaqueteResultado = @"c:\temp\paquete.pdf";
         private string strCarpetaSign = @"c:\temp";
         private const string cteArchivoTemporal = @"c:\temp\temporal";
@@ -50,18 +50,45 @@ namespace SIGENFirmador
             this.Height = 700;
         }
 
+        //private void InicializarForm()
+        //{
+        //    this.Text = "SIGEN - Gestor de documentos digitales - Versión " + System.Windows.Forms.Application.ProductVersion;
+        //    FillCboDrives(ref cboDrivesPack);
+        //    FillCboDrives(ref cboDrivesSign);
+        //    FillCboDrives(ref cbDrivesFus);
+
+        //    string carpeta = cboDrivesPack.Text;
+        //    PopulateTreeView(ref tvwCarpetasPack, carpeta);
+        //    PopulateTreeView(ref tvwCarpetasSign, carpeta);
+        //    PopulateTreeView(ref tvwCarpetasFus, carpeta);
+
+        //    this.tvwCarpetasPack.NodeMouseClick += new TreeNodeMouseClickEventHandler(this.tvwCarpetasPack_NodeMouseClick);
+        //    this.tvwCarpetasSign.NodeMouseClick += new TreeNodeMouseClickEventHandler(this.tvwCarpetasSign_NodeMouseClick);
+        //    this.tvwCarpetasFus.NodeMouseClick += new TreeNodeMouseClickEventHandler(this.tvwCarpetasFus_NodeMouseClick);
+        //}
+
         private void InicializarForm()
         {
-            this.Text = "SIGEN - Gestor de documentos digitales - Versión " + System.Windows.Forms.Application.ProductVersion;
+            SetFormTitle();
             FillCboDrives(ref cboDrivesPack);
             FillCboDrives(ref cboDrivesSign);
             FillCboDrives(ref cbDrivesFus);
 
-            string carpeta = cboDrivesPack.Text;
-            PopulateTreeView(ref tvwCarpetasPack, carpeta);
-            PopulateTreeView(ref tvwCarpetasSign, carpeta);
-            PopulateTreeView(ref tvwCarpetasFus, carpeta);
+            string selectedDrive = cboDrivesPack.Text;
+            PopulateTreeView(ref tvwCarpetasPack, selectedDrive);
+            PopulateTreeView(ref tvwCarpetasSign, selectedDrive);
+            PopulateTreeView(ref tvwCarpetasFus, selectedDrive);
 
+            AttachNodeMouseClickEventHandlers();
+        }
+
+        private void SetFormTitle()
+        {
+            this.Text = $"SIGEN - Gestor de documentos digitales - Versión {System.Windows.Forms.Application.ProductVersion}";
+        }
+
+        private void AttachNodeMouseClickEventHandlers()
+        {
             this.tvwCarpetasPack.NodeMouseClick += new TreeNodeMouseClickEventHandler(this.tvwCarpetasPack_NodeMouseClick);
             this.tvwCarpetasSign.NodeMouseClick += new TreeNodeMouseClickEventHandler(this.tvwCarpetasSign_NodeMouseClick);
             this.tvwCarpetasFus.NodeMouseClick += new TreeNodeMouseClickEventHandler(this.tvwCarpetasFus_NodeMouseClick);
