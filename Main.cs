@@ -308,7 +308,6 @@ g        public X509Certificate2 Cert;
             {
                 if (ex is NullReferenceException || ex is UnauthorizedAccessException)
                 { }
-
             }
         }
        
@@ -476,7 +475,6 @@ g        public X509Certificate2 Cert;
 
             Titulo = new iText.Layout.Element.Paragraph("Papeles de trabajo digitales").SetFontSize(14);
             doc.Add(Titulo);
-            
 
             Titulo = new iText.Layout.Element.Paragraph("Lista de Archivos").SetFontSize(11);
             doc.Add(Titulo);
@@ -615,7 +613,7 @@ g        public X509Certificate2 Cert;
 
         private void btnOCR_Click(object sender, EventArgs e)
         {
-            //ToDo: hacer OCR sobre PDF aparte de JPGs.
+            //ToDo: hacer OCR sobre PDFs aparte de JPGs.
             string OUTPUT_PDF = txtDestinoOCR.Text;
             Tesseract4OcrEngineProperties tesseract4OcrEngineProperties = new Tesseract4OcrEngineProperties();
 
@@ -655,11 +653,10 @@ g        public X509Certificate2 Cert;
             var split = new MySplitter(pdfDocumentInvoiceNumber);
             var result = split.ExtractPageRange(new PageRange(rangeSplit));
             result.Close();
-            System.IO.File.Delete(destinoSplit);
-            System.IO.File.Move(@"c:\temp\dividido.pdf", destinoSplit);
+            File.Delete(destinoSplit);
+            File.Move(@"c:\temp\dividido.pdf", destinoSplit);
             MessageBox.Show("Extracción completa.", "Ok", MessageBoxButtons.OK);
             AbrirPDF(destinoSplit);
-
         }
 
         private void btnFusion_Click(object sender, EventArgs e)
@@ -694,7 +691,7 @@ g        public X509Certificate2 Cert;
             pgsFus.Maximum = lvwArchivosFus.CheckedItems.Count;
             pgsFus.Visible = true;
 
-            /* Método anterior.
+            /* Método anterior, que perdía los Comments y Acrofields.
             var pdfList = new List<byte[]> { };
             foreach (ListViewItem item in lvwArchivosFus.CheckedItems)
             {
@@ -780,7 +777,6 @@ g        public X509Certificate2 Cert;
                 tocYCoordinate -= 20;
             }
 
-
             foreach (iText.Kernel.Pdf.PdfDocument srcDoc in ListaPDFs.Values)
             {
                 srcDoc.Close();
@@ -833,21 +829,11 @@ g        public X509Certificate2 Cert;
 
         private void chkSelSign_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkSelSign.Checked)
+            bool isChecked = chkSelSign.Checked;
+            foreach (ListViewItem item in lvwArchivosSign.Items)
             {
-                foreach (ListViewItem item in lvwArchivosSign.Items)
-                {
-                    item.Checked = true;
-                }
+                item.Checked = isChecked;
             }
-            else
-            {
-                foreach (ListViewItem item in lvwArchivosSign.Items)
-                {
-                    item.Checked = false;
-                }
-            }
-
         }
 
         private void cboDrivesPack_SelectedIndexChanged_1(object sender, EventArgs e)
