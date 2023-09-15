@@ -849,18 +849,11 @@ g        public X509Certificate2 Cert;
 
         private void lvwArchivosPack_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            int archivos=0;
-            long bytes=0;
-            foreach (ListViewItem item in lvwArchivosPack.Items)
-            {
-                if (item.Checked)
-                {
-                    archivos++;
-                    bytes += long.Parse(item.SubItems[3].Text);
-                }
-            }
+            int archivos = lvwArchivosPack.CheckedItems.Count;
+            long bytes = lvwArchivosPack.CheckedItems.Cast<ListViewItem>()
+                                                      .Sum(item => long.Parse(item.SubItems[3].Text));
 
-            lblPackBytes.Text = archivos.ToString() + " archivos seleccionados, " + bytes.ToString() + " bytes";
+            lblPackBytes.Text = string.Format("{0} archivos seleccionados, {1} bytes", archivos, bytes);
         }
 
 
