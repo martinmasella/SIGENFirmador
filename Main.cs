@@ -31,7 +31,7 @@ namespace SIGENFirmador
 {
     public partial class Main : Form
     {
-g        public X509Certificate2 Cert;
+        public X509Certificate2 Cert;
         private string strArchivoPaqueteResultado = @"c:\temp\paquete.pdf";
         private string strCarpetaSign = @"c:\temp";
         private const string cteArchivoTemporal = @"c:\temp\temporal";
@@ -107,12 +107,18 @@ g        public X509Certificate2 Cert;
 
         private void AbrirPDF(string archivo)
         {
-            Process P = new Process();
-            P.StartInfo.FileName = archivo;
-            P.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-            P.StartInfo.UseShellExecute = true;
-            P.Start();
-            P.Close();
+            try
+            {
+                Process P = new Process();
+                P.StartInfo.FileName = archivo;
+                P.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                P.StartInfo.UseShellExecute = true;
+                P.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo abrir el archivo por la siguiente razón: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public void Sign_Remember(String src, String dest, ICollection<Org.BouncyCastle.X509.X509Certificate> chain)
