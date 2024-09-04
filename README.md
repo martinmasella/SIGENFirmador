@@ -13,7 +13,7 @@ Puede:
 
 ## 🛠 Instalación
 
-// TODO:
+Instalar el Visual Studio 2022 Community Edition (gratuito) y actualizar los paquetes NuGet.
 
 ## 🎮 Uso 
 
