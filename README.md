@@ -5,8 +5,8 @@ Utilidad para tratamiento de archivos PDF
 
 Este utilitario permite manipular archivos PDF utilizando las librerías iText y Tesseract.
 Puede:
--Firmar digitalmente \n
--Empaquetar archivos dentro de un PDF \n
+-Firmar digitalmente
+-Empaquetar archivos dentro de un PDF
 -Fusionar PDFs
 -Dividir PDFs
 -Ejecutar OCR
