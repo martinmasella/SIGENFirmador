@@ -225,7 +225,7 @@
     <Compile Include="SolapaFirm.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tessdata\RoundBtn.cs">
+    <Compile Include="RoundBtn.cs">
       <SubType>Component</SubType>
     </Compile>
     <EmbeddedResource Include="Main.resx">
