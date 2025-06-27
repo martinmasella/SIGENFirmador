@@ -87,8 +87,8 @@
       <HintPath>packages\itext.8.0.4\lib\net461\itext.bouncy-castle-connector.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="itext.commons, Version=7.2.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.commons.7.2.6\lib\net461\itext.commons.dll</HintPath>
+    <Reference Include="itext.commons, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.commons.8.0.4\lib\net461\itext.commons.dll</HintPath>
     </Reference>
     <Reference Include="itext.forms, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>packages\itext7.7.2.5\lib\net461\itext.forms.dll</HintPath>
