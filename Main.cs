@@ -50,23 +50,24 @@ namespace SIGENFirmador
             this.Height = 700;
         }
 
-        //private void InicializarForm()
-        //{
-        //    this.Text = "SIGEN - Gestor de documentos digitales - Versión " + System.Windows.Forms.Application.ProductVersion;
-        //    FillCboDrives(ref cboDrivesPack);
-        //    FillCboDrives(ref cboDrivesSign);
-        //    FillCboDrives(ref cbDrivesFus);
-
-        //    string carpeta = cboDrivesPack.Text;
-        //    PopulateTreeView(ref tvwCarpetasPack, carpeta);
-        //    PopulateTreeView(ref tvwCarpetasSign, carpeta);
-        //    PopulateTreeView(ref tvwCarpetasFus, carpeta);
-
-        //    this.tvwCarpetasPack.NodeMouseClick += new TreeNodeMouseClickEventHandler(this.tvwCarpetasPack_NodeMouseClick);
-        //    this.tvwCarpetasSign.NodeMouseClick += new TreeNodeMouseClickEventHandler(this.tvwCarpetasSign_NodeMouseClick);
-        //    this.tvwCarpetasFus.NodeMouseClick += new TreeNodeMouseClickEventHandler(this.tvwCarpetasFus_NodeMouseClick);
-        //}
-
+		private void CheckTempCreated()
+		{
+			string tempFolder = @"C:\Temp";
+			if (!Directory.Exists(tempFolder))
+			{
+                try
+                {
+                    Directory.CreateDirectory(tempFolder);
+                }
+                catch (Exception ex)
+                {
+					MessageBox.Show("No se pudo crear la carpeta temporal C:\\Temp. \n" +
+									"Por favor, cree la carpeta manualmente para que esta aplicación pueda procesar archivos temporales.",
+									"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					throw new Exception("Error al crear la carpeta temporal: " + ex.Message);
+				}
+			}
+		}
         private void InicializarForm()
         {
             SetFormTitle();
@@ -105,21 +106,37 @@ namespace SIGENFirmador
             combo.SelectedIndex = 0;
         }
 
-        private void AbrirPDF(string archivo)
-        {
-            try
-            {
-                Process P = new Process();
-                P.StartInfo.FileName = archivo;
-                P.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                P.StartInfo.UseShellExecute = true;
-                P.Start();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("No se pudo abrir el archivo por la siguiente razón: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+		private void AbrirPDF(string archivo)
+		{
+			if (string.IsNullOrEmpty(archivo))
+			{
+				MessageBox.Show("La ruta del archivo PDF es inválida.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			if (!File.Exists(archivo))
+			{
+				MessageBox.Show($"No se encuentra el archivo:\n{archivo}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			try
+			{
+				using (Process proceso = new Process())
+				{
+					proceso.StartInfo.FileName = archivo;
+					proceso.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+					proceso.StartInfo.UseShellExecute = true;
+					proceso.StartInfo.Verb = "open";
+					proceso.Start();
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"No se pudo abrir el archivo por la siguiente razón:\n{ex.Message}",
+							   "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
 
         public void Sign_Remember(String src, String dest, ICollection<Org.BouncyCastle.X509.X509Certificate> chain)
         {
@@ -764,26 +781,31 @@ namespace SIGENFirmador
 
             tocDoc.CopyPagesTo(1,1,pdfMerged,formCopier);
 
-            float tocYCoordinate = 750;
-            float tocXCoordinate = doc.GetLeftMargin();
-            float tocWidth = pdfMerged.GetDefaultPageSize().GetWidth() - doc.GetLeftMargin() - doc.GetRightMargin();
-            
-            foreach (KeyValuePair<int, String> entry in toc)
-            {
-                Paragraph p = new Paragraph();
-                p.AddTabStops(new TabStop(500, iText.Layout.Properties.TabAlignment.LEFT, new DashedLine()));
-                p.Add(entry.Value);
-                p.Add(new Tab());
-                p.Add(entry.Key.ToString());
-                p.SetAction(iText.Kernel.Pdf.Action.PdfAction.CreateGoTo("p" + entry.Key));
-                doc.Add(p
-                        .SetFixedPosition(pdfMerged.GetNumberOfPages(), tocXCoordinate, tocYCoordinate, tocWidth)
-                        .SetMargin(0)
-                        .SetMultipliedLeading(1));
-                tocYCoordinate -= 20;
-            }
+			float tocYCoordinate = 750;
+			float tocXCoordinate = doc.GetLeftMargin();
+			float tocWidth = pdfMerged.GetDefaultPageSize().GetWidth() - doc.GetLeftMargin() - doc.GetRightMargin();
 
-            foreach (iText.Kernel.Pdf.PdfDocument srcDoc in ListaPDFs.Values)
+			foreach (KeyValuePair<int, String> entry in toc)
+			{
+				Paragraph p = new Paragraph()
+					.SetFontSize(9) 
+					.SetFixedLeading(15); 
+
+				p.AddTabStops(new TabStop(450, iText.Layout.Properties.TabAlignment.LEFT, new DashedLine())); // Reduce el ancho del tab
+				p.Add(entry.Value);
+				p.Add(new Tab());
+				p.Add(entry.Key.ToString());
+				p.SetAction(iText.Kernel.Pdf.Action.PdfAction.CreateGoTo("p" + entry.Key));
+				doc.Add(p
+						.SetFixedPosition(pdfMerged.GetNumberOfPages(), tocXCoordinate, tocYCoordinate, tocWidth)
+						.SetMargin(3) // Agrega un pequeño margen
+						.SetMultipliedLeading(1.2f)); // Incrementa ligeramente el espaciado entre líneas
+
+				tocYCoordinate -= 25;
+			}
+
+
+			foreach (iText.Kernel.Pdf.PdfDocument srcDoc in ListaPDFs.Values)
             {
                 srcDoc.Close();
             }
