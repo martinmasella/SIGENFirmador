@@ -747,23 +747,31 @@ namespace SIGENFirmador
 
                 toc.Add(page, entry.Key);
 
-                for (int i = 1; i<= totPages; i++, page++)
-                {
-                    //Mejor no numerar las páginas porque el "Pag..." se puede superponer con el contenido.
-                    //iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Format("Pag. {0}", page));
-                    iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Empty);
-                    srcDoc.CopyPagesTo(i,i,pdfMerged,formCopier);
-                    if (i == 1)
-                    {
-                        text.SetDestination("p" + page);
-                    }
+				for (int i = 1; i <= totPages; i++, page++)
+				{
+					try
+					{
+						//Mejor no numerar las páginas porque el "Pag..." se puede superponer con el contenido.
+						//iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Format("Pag. {0}", page));
+						iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Empty);
+						srcDoc.CopyPagesTo(i, i, pdfMerged, formCopier);
+						if (i == 1)
+						{
+							text.SetDestination("p" + page);
+						}
 
-                    doc.Add(new Paragraph(text)
-                        .SetFixedPosition(page, 549,810,40)
-                        .SetMargin(0)
-                        .SetMultipliedLeading(1));
-                }
-            }
+						doc.Add(new Paragraph(text)
+							.SetFixedPosition(page, 549, 810, 40)
+							.SetMargin(0)
+							.SetMultipliedLeading(1));
+					}
+					catch (Exception ex)
+					{
+						MessageBox.Show($"Error al procesar el archivo '{entry.Key}':\n{ex.Message}",
+									   "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
+				}
+			}
 
             iText.Kernel.Pdf.PdfDocument tocDoc = new iText.Kernel.Pdf.PdfDocument(new iText.Kernel.Pdf.PdfWriter(cteArchivoTemporal));
             Document altDoc = new Document(tocDoc);
