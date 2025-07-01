@@ -496,10 +496,10 @@ namespace SIGENFirmador
             iText.Layout.Element.Paragraph Titulo;
             iText.Layout.Element.Paragraph Parrafo;
 
-            Titulo = new iText.Layout.Element.Paragraph("Papeles de trabajo digitales").SetFontSize(14);
+            Titulo = new iText.Layout.Element.Paragraph("Papeles de trabajo digitales").SetFontSize(14.0f);
             doc.Add(Titulo);
 
-            Titulo = new iText.Layout.Element.Paragraph("Lista de Archivos").SetFontSize(11);
+            Titulo = new iText.Layout.Element.Paragraph("Lista de Archivos").SetFontSize(11.0f);
             doc.Add(Titulo);
 
             string s;
@@ -749,11 +749,11 @@ namespace SIGENFirmador
 
 				for (int i = 1; i <= totPages; i++, page++)
 				{
+					iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Empty);
 					try
 					{
 						//Mejor no numerar las páginas porque el "Pag..." se puede superponer con el contenido.
 						//iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Format("Pag. {0}", page));
-						iText.Layout.Element.Text text = new iText.Layout.Element.Text(String.Empty);
 						srcDoc.CopyPagesTo(i, i, pdfMerged, formCopier);
 						if (i == 1)
 						{
