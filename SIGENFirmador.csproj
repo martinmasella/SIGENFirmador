@@ -83,12 +83,8 @@
     <Reference Include="itext.barcodes, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>packages\itext7.7.2.5\lib\net461\itext.barcodes.dll</HintPath>
     </Reference>
-    <Reference Include="itext.bouncy-castle-connector, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext.8.0.4\lib\net461\itext.bouncy-castle-connector.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="itext.commons, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext.commons.8.0.4\lib\net461\itext.commons.dll</HintPath>
+    <Reference Include="itext.commons, Version=7.2.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext7.commons.7.2.6\lib\net461\itext.commons.dll</HintPath>
     </Reference>
     <Reference Include="itext.forms, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>packages\itext7.7.2.5\lib\net461\itext.forms.dll</HintPath>
@@ -110,11 +106,6 @@
     </Reference>
     <Reference Include="itext.pdfocr.tesseract4, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>packages\itext7.pdfocr.tesseract4.2.0.2\lib\net461\itext.pdfocr.tesseract4.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="itext.pdfua, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext.8.0.4\lib\net461\itext.pdfua.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="itext.sign, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>packages\itext7.7.2.5\lib\net461\itext.sign.dll</HintPath>
@@ -207,7 +198,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="Tesseract, Version=4.0.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>packages\itext7.pdfocr.tesseract4.2.0.2\lib\net461\Tesseract.dll</HintPath>
-      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -279,15 +269,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.1\build\itext7.pdfocr.tesseract4.targets" Condition="Exists('..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.1\build\itext7.pdfocr.tesseract4.targets')" />
+  <Import Project="..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets" Condition="Exists('..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.1\build\itext7.pdfocr.tesseract4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.1\build\itext7.pdfocr.tesseract4.targets'))" />
-    <Error Condition="!Exists('packages\itext.pdfocr.tesseract4.3.0.2\build\itext.pdfocr.tesseract4.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\itext.pdfocr.tesseract4.3.0.2\build\itext.pdfocr.tesseract4.targets'))" />
+    <Error Condition="!Exists('..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets'))" />
     <Error Condition="!Exists('packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets'))" />
   </Target>
-  <Import Project="packages\itext.pdfocr.tesseract4.3.0.2\build\itext.pdfocr.tesseract4.targets" Condition="Exists('packages\itext.pdfocr.tesseract4.3.0.2\build\itext.pdfocr.tesseract4.targets')" />
   <Import Project="packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets" Condition="Exists('packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets')" />
 </Project>
