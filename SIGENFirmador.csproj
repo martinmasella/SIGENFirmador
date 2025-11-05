@@ -275,7 +275,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.1\build\itext7.pdfocr.tesseract4.targets" Condition="Exists('..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.1\build\itext7.pdfocr.tesseract4.targets')" />
+  <Import Project="..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets" Condition="Exists('..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
