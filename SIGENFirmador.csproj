@@ -71,6 +71,7 @@
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Common.Logging, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
       <HintPath>packages\Common.Logging.3.4.1\lib\net40\Common.Logging.dll</HintPath>
@@ -80,50 +81,47 @@
       <HintPath>packages\Common.Logging.Core.3.4.1\lib\net40\Common.Logging.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="itext.barcodes, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.7.2.5\lib\net461\itext.barcodes.dll</HintPath>
+    <Reference Include="itext.barcodes, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.8.0.4\lib\net461\itext.barcodes.dll</HintPath>
     </Reference>
     <Reference Include="itext.bouncy-castle-connector, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>packages\itext.8.0.4\lib\net461\itext.bouncy-castle-connector.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="itext.commons, Version=7.2.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.commons.7.2.6\lib\net461\itext.commons.dll</HintPath>
+    <Reference Include="itext.commons, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.commons.8.0.4\lib\net461\itext.commons.dll</HintPath>
     </Reference>
-    <Reference Include="itext.forms, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.7.2.5\lib\net461\itext.forms.dll</HintPath>
+    <Reference Include="itext.forms, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.8.0.4\lib\net461\itext.forms.dll</HintPath>
     </Reference>
-    <Reference Include="itext.io, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.7.2.5\lib\net461\itext.io.dll</HintPath>
+    <Reference Include="itext.io, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.8.0.4\lib\net461\itext.io.dll</HintPath>
     </Reference>
-    <Reference Include="itext.kernel, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.7.2.5\lib\net461\itext.kernel.dll</HintPath>
+    <Reference Include="itext.kernel, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.8.0.4\lib\net461\itext.kernel.dll</HintPath>
     </Reference>
-    <Reference Include="itext.layout, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.7.2.5\lib\net461\itext.layout.dll</HintPath>
+    <Reference Include="itext.layout, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.8.0.4\lib\net461\itext.layout.dll</HintPath>
     </Reference>
-    <Reference Include="itext.pdfa, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.7.2.5\lib\net461\itext.pdfa.dll</HintPath>
+    <Reference Include="itext.pdfa, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.8.0.4\lib\net461\itext.pdfa.dll</HintPath>
     </Reference>
-    <Reference Include="itext.pdfocr.api, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.pdfocr.api.2.0.2\lib\net461\itext.pdfocr.api.dll</HintPath>
+    <Reference Include="itext.pdfocr.api, Version=3.0.2.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.pdfocr.api.3.0.2\lib\net461\itext.pdfocr.api.dll</HintPath>
     </Reference>
-    <Reference Include="itext.pdfocr.tesseract4, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.pdfocr.tesseract4.2.0.2\lib\net461\itext.pdfocr.tesseract4.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="itext.pdfocr.tesseract4, Version=3.0.2.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.pdfocr.tesseract4.3.0.2\lib\net461\itext.pdfocr.tesseract4.dll</HintPath>
     </Reference>
     <Reference Include="itext.pdfua, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>packages\itext.8.0.4\lib\net461\itext.pdfua.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="itext.sign, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.7.2.5\lib\net461\itext.sign.dll</HintPath>
+    <Reference Include="itext.sign, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.8.0.4\lib\net461\itext.sign.dll</HintPath>
     </Reference>
-    <Reference Include="itext.styledxmlparser, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.7.2.5\lib\net461\itext.styledxmlparser.dll</HintPath>
+    <Reference Include="itext.styledxmlparser, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.8.0.4\lib\net461\itext.styledxmlparser.dll</HintPath>
     </Reference>
-    <Reference Include="itext.svg, Version=7.2.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.7.2.5\lib\net461\itext.svg.dll</HintPath>
+    <Reference Include="itext.svg, Version=8.0.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\itext.8.0.4\lib\net461\itext.svg.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp, Version=5.5.13.3, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>packages\iTextSharp.5.5.13.3\lib\itextsharp.dll</HintPath>
@@ -206,8 +204,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Tesseract, Version=4.0.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\itext7.pdfocr.tesseract4.2.0.2\lib\net461\Tesseract.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>packages\itext7.pdfocr.tesseract4.3.0.2\lib\net461\Tesseract.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -250,7 +247,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="SIGENFirmador_TemporaryKey.pfx" />
     <None Include="tessdata\configs" />
     <None Include="tessdata\eng.traineddata" />
     <None Include="tessdata\lat.traineddata" />
@@ -285,9 +281,9 @@
       <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.1\build\itext7.pdfocr.tesseract4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\SIGENFirmador\packages\itext7.pdfocr.tesseract4.2.0.1\build\itext7.pdfocr.tesseract4.targets'))" />
-    <Error Condition="!Exists('packages\itext.pdfocr.tesseract4.3.0.2\build\itext.pdfocr.tesseract4.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\itext.pdfocr.tesseract4.3.0.2\build\itext.pdfocr.tesseract4.targets'))" />
     <Error Condition="!Exists('packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets'))" />
+    <Error Condition="!Exists('packages\itext.pdfocr.tesseract4.3.0.2\build\itext.pdfocr.tesseract4.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\itext.pdfocr.tesseract4.3.0.2\build\itext.pdfocr.tesseract4.targets'))" />
   </Target>
-  <Import Project="packages\itext.pdfocr.tesseract4.3.0.2\build\itext.pdfocr.tesseract4.targets" Condition="Exists('packages\itext.pdfocr.tesseract4.3.0.2\build\itext.pdfocr.tesseract4.targets')" />
   <Import Project="packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets" Condition="Exists('packages\itext7.pdfocr.tesseract4.2.0.2\build\itext7.pdfocr.tesseract4.targets')" />
+  <Import Project="packages\itext.pdfocr.tesseract4.3.0.2\build\itext.pdfocr.tesseract4.targets" Condition="Exists('packages\itext.pdfocr.tesseract4.3.0.2\build\itext.pdfocr.tesseract4.targets')" />
 </Project>
