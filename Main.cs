@@ -28,10 +28,12 @@ using iText.Layout.Element;
 using iText.Layout;
 using PdfReader = iText.Kernel.Pdf.PdfReader;
 using iText.Kernel.Pdf.Canvas.Draw;
-<<<<<<< HEAD
 using iText.Signatures;
-=======
->>>>>>> 41d9f470a670d533b07e7beae4be65a49824c9b8
+
+// Solución: Usar tipos totalmente calificados de BouncyCastle.Cryptography (versión 2.x)
+// para evitar ambigüedad con BouncyCastle.Crypto (versión 1.x)
+using BCX509Certificate = Org.BouncyCastle.X509.X509Certificate;
+using BCX509CertificateParser = Org.BouncyCastle.X509.X509CertificateParser;
 
 namespace SIGENFirmador
 {
@@ -74,17 +76,7 @@ namespace SIGENFirmador
 				}
 			}
 		}
-<<<<<<< HEAD
 
-        public void Sign_Remember(String src, String dest, ICollection<Org.BouncyCastle.X509.X509Certificate> chain)
-        {
-            // MIGRACIÓN A iText 9: Firma digital PAdES/CAdES moderna usando PdfSigningService
-            // Compatible con Adobe Reader, Smart Cards y Tokens USB
-            try
-            {
-                // Validar certificado
-                if (Cert == null)
-=======
         private void InicializarForm()
         {
             SetFormTitle();
@@ -155,37 +147,14 @@ namespace SIGENFirmador
 			}
 		}
 
-        public void Sign_Remember(String src, String dest, ICollection<Org.BouncyCastle.X509.X509Certificate> chain)
+        public void Sign_Remember(String src, String dest, ICollection<BCX509Certificate> chain)
         {
-            //Este método usa la librería iTextSharp5 vieja, debido a que la clase X509Certificate2Signature no fue "porteada" a iText7.
+            // MIGRACIÓN A iText 9: Firma digital PAdES/CAdES moderna usando PdfSigningService
+            // Compatible con Adobe Reader, Smart Cards y Tokens USB
             try
             {
-                IExternalSignature pks = new X509Certificate2Signature(Cert,"SHA-1");
-
-                int llx = 40, lly = 120, urx = 200, ury = 40; //Coordenadas para fijar la firma...
-                iTextSharp.text.pdf.PdfReader reader = new iTextSharp.text.pdf.PdfReader(src);
-                FileStream os = new FileStream(dest, FileMode.Create);
-                iTextSharp.text.pdf.PdfStamper stamper = PdfStamper.CreateSignature(reader, os, '\0');
-
-                PdfSignatureAppearance appearance = stamper.SignatureAppearance;
-                //PdfSigLockDictionary pdfSigLockDictionary = new PdfSigLockDictionary(new PdfSigLockDictionary.LockPermissions)
-                appearance.FieldLockDict = null;
-
-                //Genera un valor random por las dudas que no se superpongan 2 cuadrantes de firma en el mismo form con el mismo name.
-                Random rand = new Random();
-                int rnd = rand.Next(0, 1000);
-                appearance.Layer2Text = "Firmado digitalmente por " + Cert.GetNameInfo(X509NameType.SimpleName, false) + " de " +
-                    new Org.BouncyCastle.Asn1.X509.X509Name(Cert.Subject).GetValueList(Org.BouncyCastle.Asn1.X509.X509Name.O).OfType<string>().FirstOrDefault() +
-                    " el " + DateTime.Now.ToLongDateString() + " a las " + DateTime.Now.ToLongTimeString();
-                appearance.SetVisibleSignature(new iTextSharp.text.Rectangle(llx, lly, urx, ury), 1, "Firma_" + rnd.ToString());
-                
-                //Esta línea bloquea completamente al documento.
-                //Debería agregar un check para que el usuario indique si quiere que esto suceda.
-                //Para ello debería también parametrizar el método ya que lo usan 2 funciones.
-                //appearance.CertificationLevel = PdfSignatureAppearance.CERTIFIED_NO_CHANGES_ALLOWED;
-
-                if (bFlag == false)
->>>>>>> 41d9f470a670d533b07e7beae4be65a49824c9b8
+                // Validar certificado
+                if (Cert == null)
                 {
                     MessageBox.Show("No se ha seleccionado un certificado para firmar.",
                                     "Error de certificado", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -210,7 +179,6 @@ namespace SIGENFirmador
             }
             catch (Exception e)
             {
-<<<<<<< HEAD
                 MessageBox.Show($"Error al firmar el documento: {e.Message}\n\n" +
                                $"Tipo: {e.GetType().Name}\n" +
                                $"Causa: {e.InnerException?.Message ?? "No disponible"}",
@@ -222,14 +190,12 @@ namespace SIGENFirmador
         /// Obtiene la cadena completa de certificados del certificado seleccionado
         /// incluyendo certificados intermedios y raíz del almacén del sistema
         /// </summary>
-        private Org.BouncyCastle.X509.X509Certificate[] GetCompleteCertificateChain(X509Certificate2 cert)
+        private BCX509Certificate[] GetCompleteCertificateChain(X509Certificate2 cert)
         {
             try
             {
-                List<Org.BouncyCastle.X509.X509Certificate> chainList = new List<Org.BouncyCastle.X509.X509Certificate>();
-                
-                // Parser de BouncyCastle para convertir certificados
-                Org.BouncyCastle.X509.X509CertificateParser parser = new Org.BouncyCastle.X509.X509CertificateParser();
+                List<BCX509Certificate> chainList = new List<BCX509Certificate>();
+                BCX509CertificateParser parser = new BCX509CertificateParser();
 
                 // Agregar el certificado de firma
                 chainList.Add(parser.ReadCertificate(cert.RawData));
@@ -245,7 +211,7 @@ namespace SIGENFirmador
                 {
                     try
                     {
-                        Org.BouncyCastle.X509.X509Certificate bcCert = parser.ReadCertificate(
+                        BCX509Certificate bcCert = parser.ReadCertificate(
                             chain.ChainElements[i].Certificate.RawData);
                         chainList.Add(bcCert);
                     }
@@ -264,11 +230,8 @@ namespace SIGENFirmador
                     "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 
                 // Retornar al menos el certificado principal si hay error
-                Org.BouncyCastle.X509.X509CertificateParser parser = new Org.BouncyCastle.X509.X509CertificateParser();
-                return new Org.BouncyCastle.X509.X509Certificate[] { parser.ReadCertificate(cert.RawData) };
-=======
-                MessageBox.Show(e.Message, "Error");
->>>>>>> 41d9f470a670d533b07e7beae4be65a49824c9b8
+                BCX509CertificateParser parser = new BCX509CertificateParser();
+                return new BCX509Certificate[] { parser.ReadCertificate(cert.RawData) };
             }
         }
 
@@ -647,7 +610,7 @@ namespace SIGENFirmador
                 }
                 store.Close();
 
-                Org.BouncyCastle.X509.X509Certificate[] chain = GetCompleteCertificateChain(Cert);
+                BCX509Certificate[] chain = GetCompleteCertificateChain(Cert);
 
                 Sign_Remember(cteArchivoTemporal, strArchivoPaqueteResultado, chain);
 
@@ -685,7 +648,6 @@ namespace SIGENFirmador
 
                 try
                 {
-<<<<<<< HEAD
                     // Mostrar diálogo de selección de certificado
                     X509Certificate2Collection selectedCerts = X509Certificate2UI.SelectFromCollection(
                         fcollection, 
@@ -702,9 +664,6 @@ namespace SIGENFirmador
                     }
 
                     selectedCert = selectedCerts[0];
-=======
-                    Cert = X509Certificate2UI.SelectFromCollection(fcollection, "Elegir", "Seleccione el certificado que desea utilizar", X509SelectionFlag.SingleSelection)[0];
->>>>>>> 41d9f470a670d533b07e7beae4be65a49824c9b8
                 }
                 catch (Exception ex)
                 {
@@ -740,7 +699,7 @@ namespace SIGENFirmador
                 }
 
                 // Preparar la cadena completa de certificados
-                Org.BouncyCastle.X509.X509Certificate[] chain = GetCompleteCertificateChain(selectedCert);
+                BCX509Certificate[] chain = GetCompleteCertificateChain(selectedCert);
 
                 string archivo;
 
@@ -768,14 +727,11 @@ namespace SIGENFirmador
                 
                 MessageBox.Show("Firmado completo", "Ok", MessageBoxButtons.OK);
             }
-<<<<<<< HEAD
             catch (Exception ex)
             {
                 MessageBox.Show($"Error durante la firma: {ex.Message}\n\nDetalles: {ex.InnerException?.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-=======
->>>>>>> 41d9f470a670d533b07e7beae4be65a49824c9b8
         }
 
         private void btnOCR_Click(object sender, EventArgs e)
@@ -787,10 +743,6 @@ namespace SIGENFirmador
             IList<FileInfo> LIST_IMAGES_OCR = new List<FileInfo>();
             LIST_IMAGES_OCR.Add(new FileInfo(txtOriginalOCR.Text));
             Tesseract4LibOcrEngine tesseractReader = new Tesseract4LibOcrEngine(tesseract4OcrEngineProperties);
-<<<<<<< HEAD
-            //tesseract4OcrEngineProperties.SetPathToTessData(new FileInfo(Application.StartupPath + "\\tessdata"));
-=======
->>>>>>> 41d9f470a670d533b07e7beae4be65a49824c9b8
             tesseract4OcrEngineProperties.SetPathToTessData(new FileInfo(Application.StartupPath + "\\tessdata"));
 
             var ocrPdfCreator = new OcrPdfCreator(tesseractReader);
@@ -1165,77 +1117,8 @@ namespace SIGENFirmador
         {
             System.Diagnostics.Process.Start("https://github.com/martinmasella/SIGENFirmador");
         }
-
-        private void InicializarForm()
-        {
-            SetFormTitle();
-            FillCboDrives(ref cboDrivesPack);
-            FillCboDrives(ref cboDrivesSign);
-            FillCboDrives(ref cbDrivesFus);
-
-            string selectedDrive = cboDrivesPack.Text;
-            PopulateTreeView(ref tvwCarpetasPack, selectedDrive);
-            PopulateTreeView(ref tvwCarpetasSign, selectedDrive);
-            PopulateTreeView(ref tvwCarpetasFus, selectedDrive);
-
-            AttachNodeMouseClickEventHandlers();
-        }
-
-        private void SetFormTitle()
-        {
-            this.Text = $"SIGEN - Gestor de documentos digitales - Versión {System.Windows.Forms.Application.ProductVersion}";
-        }
-
-        private void AttachNodeMouseClickEventHandlers()
-        {
-            this.tvwCarpetasPack.NodeMouseClick += new TreeNodeMouseClickEventHandler(this.tvwCarpetasPack_NodeMouseClick);
-            this.tvwCarpetasSign.NodeMouseClick += new TreeNodeMouseClickEventHandler(this.tvwCarpetasSign_NodeMouseClick);
-            this.tvwCarpetasFus.NodeMouseClick += new TreeNodeMouseClickEventHandler(this.tvwCarpetasFus_NodeMouseClick);
-        }
-
-        private void FillCboDrives(ref ComboBox combo)
-        {
-            DriveInfo[] allDrives = DriveInfo.GetDrives();
-            combo.Items.Clear();
-            foreach (DriveInfo d in allDrives)
-            {
-                combo.Items.Add(d.Name);
-            }
-            combo.SelectedIndex = 0;
-        }
-
-		private void AbrirPDF(string archivo)
-		{
-			if (string.IsNullOrEmpty(archivo))
-			{
-				MessageBox.Show("La ruta del archivo PDF es inválida.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
-
-			if (!File.Exists(archivo))
-			{
-				MessageBox.Show($"No se encuentra el archivo:\n{archivo}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
-
-			try
-			{
-				using (Process proceso = new Process())
-				{
-					proceso.StartInfo.FileName = archivo;
-					proceso.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-					proceso.StartInfo.UseShellExecute = true;
-					proceso.StartInfo.Verb = "open";
-					proceso.Start();
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show($"No se pudo abrir el archivo por la siguiente razón:\n{ex.Message}",
-							   "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
     }
+    
     class MySplitter : PdfSplitter
     {
         public MySplitter(iText.Kernel.Pdf.PdfDocument pdfDocument) : base(pdfDocument)

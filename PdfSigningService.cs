@@ -6,7 +6,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.IO;
 using iText.Bouncycastleconnector;
 using iText.Commons.Bouncycastle.Cert;
-using Org.BouncyCastle.X509;
+// Usar alias específico para evitar ambigüedad con BouncyCastle.Crypto (versión antigua)
+using BCX509Certificate = Org.BouncyCastle.X509.X509Certificate;
+using BCX509CertificateParser = Org.BouncyCastle.X509.X509CertificateParser;
 
 namespace SIGENFirmador
 {
@@ -158,8 +160,8 @@ namespace SIGENFirmador
                 foreach (X509ChainElement element in chain.ChainElements)
                 {
                     byte[] certBytes = element.Certificate.RawData;
-                    X509CertificateParser parser = new X509CertificateParser();
-                    Org.BouncyCastle.X509.X509Certificate bcCert = parser.ReadCertificate(certBytes);
+                    BCX509CertificateParser parser = new BCX509CertificateParser();
+                    BCX509Certificate bcCert = parser.ReadCertificate(certBytes);
                     
                     // Crear el wrapper de iText
                     IX509Certificate iTextCert = BouncyCastleFactoryCreator.GetFactory().CreateX509Certificate(bcCert);
