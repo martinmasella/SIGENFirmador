@@ -12,6 +12,13 @@ using System.IO;
 using iText;
 using iText.Kernel.Pdf;
 
+// Si el error persiste, asegúrate de que la referencia al ensamblado 'itext7' (o el paquete NuGet correspondiente, por ejemplo 'itext7') esté correctamente agregada al proyecto.
+// Ve a "Administrador de paquetes NuGet" en Visual Studio y busca e instala el paquete 'itext7' o 'itext7.kernel'.
+// Si usas .NET Core/Framework, verifica que el archivo .csproj incluya la referencia:
+// <PackageReference Include="itext7" Version="x.x.x" />
+
+// Si el paquete está instalado y el error sigue, limpia y reconstruye la solución.
+// Si el error ocurre en una línea específica, por favor indícalo para poder sugerir una corrección más precisa.
 using iText.Kernel.Pdf.Filespec;
 
 using System.Diagnostics;
