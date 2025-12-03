@@ -22,12 +22,4 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F580D7FF-4F9F-4683-A964-C9715B10F78C}
 	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://desarrollo-v.sigen.net:8080/tfs/desarrollo
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = SIGENFirmador.csproj
-		SccLocalPath1 = .
-	EndGlobalSection
 EndGlobal

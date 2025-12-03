@@ -1,5 +1,4 @@
-﻿
-namespace SIGENFirmador
+﻿namespace SIGENFirmador
 {
     partial class Main
     {
