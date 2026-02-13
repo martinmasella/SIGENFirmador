@@ -20,7 +20,7 @@ Instalar el Visual Studio 2022 Community Edition (gratuito) y actualizar los paq
 
 ## 🎮 Uso 
 
-// TODO: Migrar de iTextSharp 5 a iText7.
+// TODO: Migrado de iTextSharp 5 a iText7.
 
 ## 😋 Contribuciones
 Juan Luis Mango, Martín Capo, Leonardo Moffa, Susana Mariño y Magalí Raymundo
