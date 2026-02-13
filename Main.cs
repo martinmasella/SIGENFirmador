@@ -9,38 +9,22 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
-using iText;
 using iText.Kernel.Pdf;
-
-// Si el error persiste, asegúrate de que la referencia al ensamblado 'itext7' (o el paquete NuGet correspondiente, por ejemplo 'itext7') esté correctamente agregada al proyecto.
-// Ve a "Administrador de paquetes NuGet" en Visual Studio y busca e instala el paquete 'itext7' o 'itext7.kernel'.
-// Si usas .NET Core/Framework, verifica que el archivo .csproj incluya la referencia:
-// <PackageReference Include="itext7" Version="x.x.x" />
-
-// Si el paquete está instalado y el error sigue, limpia y reconstruye la solución.
-// Si el error ocurre en una línea específica, por favor indícalo para poder sugerir una corrección más precisa.
 using iText.Kernel.Pdf.Filespec;
-
 using System.Diagnostics;
 using System.Security.Cryptography;
-
 using iText.Pdfocr;
 using iText.Pdfocr.Tesseract4;
-
 using PdfWriter = iText.Kernel.Pdf.PdfWriter;
 using iText.Kernel.Utils;
-using iText.Pdfa;
 using iText.Forms;
 using iText.Layout.Element;
 using iText.Layout;
 using PdfReader = iText.Kernel.Pdf.PdfReader;
 using iText.Kernel.Pdf.Canvas.Draw;
 using iText.Signatures;
-
-// Solución: Usar tipos totalmente calificados de BouncyCastle.Cryptography (versión 2.x)
-// para evitar ambigüedad con BouncyCastle.Crypto (versión 1.x)
+using Org.BouncyCastle.X509;
 using BCX509Certificate = Org.BouncyCastle.X509.X509Certificate;
-using BCX509CertificateParser = Org.BouncyCastle.X509.X509CertificateParser;
 
 namespace SIGENFirmador
 {
@@ -156,7 +140,7 @@ namespace SIGENFirmador
 
         public void Sign_Remember(String src, String dest, ICollection<BCX509Certificate> chain)
         {
-            // MIGRACIÓN A iText 9: Firma digital PAdES/CAdES moderna usando PdfSigningService
+            // Firma digital usando PdfSigningService con iText7
             // Compatible con Adobe Reader, Smart Cards y Tokens USB
             try
             {
@@ -175,7 +159,7 @@ namespace SIGENFirmador
                     return;
                 }
 
-                // Usar el nuevo servicio de firma que maneja automáticamente
+                // Usar el servicio de firma que maneja automaticamente
                 // la cadena de certificados y es compatible con CNG/CSP
                 PdfSigningService.SignPdf(src, dest, Cert, 
                     reason: "Documento firmado digitalmente", 
@@ -195,19 +179,19 @@ namespace SIGENFirmador
 
         /// <summary>
         /// Obtiene la cadena completa de certificados del certificado seleccionado
-        /// incluyendo certificados intermedios y raíz del almacén del sistema
+        /// incluyendo certificados intermedios y raiz del almacen del sistema
         /// </summary>
         private BCX509Certificate[] GetCompleteCertificateChain(X509Certificate2 cert)
         {
             try
             {
                 List<BCX509Certificate> chainList = new List<BCX509Certificate>();
-                BCX509CertificateParser parser = new BCX509CertificateParser();
+                X509CertificateParser parser = new X509CertificateParser();
 
                 // Agregar el certificado de firma
                 chainList.Add(parser.ReadCertificate(cert.RawData));
 
-                // Obtener la cadena de certificados desde el almacén del sistema
+                // Obtener la cadena de certificados desde el almacen del sistema
                 X509Chain chain = new X509Chain();
                 chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
                 chain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
@@ -224,7 +208,7 @@ namespace SIGENFirmador
                     }
                     catch (Exception ex)
                     {
-                        // Si hay error al procesar un certificado intermedio, continuamos con los demás
+                        // Si hay error al procesar un certificado intermedio, continuamos con los demas
                         System.Diagnostics.Debug.WriteLine($"Error al procesar certificado intermedio: {ex.Message}");
                     }
                 }
@@ -237,7 +221,7 @@ namespace SIGENFirmador
                     "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 
                 // Retornar al menos el certificado principal si hay error
-                BCX509CertificateParser parser = new BCX509CertificateParser();
+                X509CertificateParser parser = new X509CertificateParser();
                 return new BCX509Certificate[] { parser.ReadCertificate(cert.RawData) };
             }
         }

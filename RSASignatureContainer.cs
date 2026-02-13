@@ -7,7 +7,7 @@ using iText.Signatures;
 namespace SIGENFirmador
 {
     /// <summary>
-    /// Contenedor de firma externa para iText9 que implementa firma RSA con SHA-256
+    /// Contenedor de firma externa para iText7 que implementa firma RSA con SHA-256
     /// Compatible con PAdES y CAdES
     /// </summary>
     public class RSASignatureContainer : IExternalSignatureContainer
@@ -60,16 +60,9 @@ namespace SIGENFirmador
 
         /// <summary>
         /// Permite modificar el diccionario de firma si es necesario
-        /// iText9 maneja automáticamente los campos esenciales
         /// </summary>
         public void ModifySigningDictionary(iText.Kernel.Pdf.PdfDictionary signDictionary)
         {
-            // Este método se puede dejar vacío, iText9 maneja los campos automáticamente
-        }
-
-        public void Close()
-        {
-            // No hay recursos no administrados para liberar
         }
     }
 }

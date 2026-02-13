@@ -4,24 +4,21 @@ using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
-using iText.Bouncycastleconnector;
-using iText.Commons.Bouncycastle.Cert;
-// Usar alias específico para evitar ambigüedad con BouncyCastle.Crypto (versión antigua)
+using Org.BouncyCastle.X509;
 using BCX509Certificate = Org.BouncyCastle.X509.X509Certificate;
-using BCX509CertificateParser = Org.BouncyCastle.X509.X509CertificateParser;
 
 namespace SIGENFirmador
 {
     /// <summary>
-    /// Clase para firmar digitalmente archivos PDF usando iText 9 con PKCS#7 CMS
+    /// Clase para firmar digitalmente archivos PDF usando iText7 con PKCS#7 CMS
     /// Compatible con Adobe Reader y certificados protegidos (Smart Cards, Tokens USB)
     /// </summary>
     public class PdfSigningService
     {
         /// <summary>
         /// Firma digitalmente un PDF con SHA-256 usando PKCS#7 detached signature
-        /// Utiliza el método estándar de iText 9 compatible con Adobe Reader
-        /// Windows mostrará automáticamente el diálogo de PIN/contraseña si es necesario
+        /// Compatible con Adobe Reader
+        /// Windows mostrara automaticamente el dialogo de PIN/contrasena si es necesario
         /// </summary>
         public static void SignPdf(string inputPdfPath, string outputPdfPath, X509Certificate2 certificate, 
             string reason = "Documento firmado digitalmente", string location = "Argentina")
@@ -30,7 +27,7 @@ namespace SIGENFirmador
                 throw new FileNotFoundException($"El archivo PDF no existe: {inputPdfPath}");
 
             if (certificate == null)
-                throw new ArgumentNullException(nameof(certificate), "Se debe proporcionar un certificado válido");
+                throw new ArgumentNullException(nameof(certificate), "Se debe proporcionar un certificado valido");
 
             if (!certificate.HasPrivateKey)
                 throw new ArgumentException("El certificado debe contener una clave privada");
@@ -39,9 +36,6 @@ namespace SIGENFirmador
             FileStream fos = null;
             try
             {
-                // Inicializar el factory de BouncyCastle
-                BouncyCastleFactoryCreator.GetFactory();
-                
                 pdfReader = new PdfReader(inputPdfPath);
                 fos = new FileStream(outputPdfPath, FileMode.Create);
                 
@@ -50,14 +44,14 @@ namespace SIGENFirmador
                 
                 PdfSigner signer = new PdfSigner(pdfReader, fos, stampingProperties);
                 
-                // Crear SignerProperties para configurar metadata
-                SignerProperties signerProperties = new SignerProperties();
-                signerProperties.SetReason(reason);
-                signerProperties.SetLocation(location);
-                signerProperties.SetFieldName($"Signature{new Random().Next(1, 1000)}");
+                // Configurar metadata de la firma
+                PdfSignatureAppearance appearance = signer.GetSignatureAppearance();
+                appearance.SetReason(reason);
+                appearance.SetLocation(location);
+                signer.SetFieldName($"Signature{new Random().Next(1, 1000)}");
                 
                 // Construir la cadena de certificados
-                IX509Certificate[] chain = BuildCertificateChain(certificate);
+                Org.BouncyCastle.X509.X509Certificate[] chain = BuildCertificateChain(certificate);
                 
                 // Obtener la clave privada compatible con CNG y CSP
                 AsymmetricAlgorithm privateKey = GetPrivateKeyAlgorithm(certificate);
@@ -65,14 +59,13 @@ namespace SIGENFirmador
                 if (privateKey == null)
                 {
                     throw new Exception("No se pudo acceder a la clave privada del certificado. " +
-                        "Asegúrese de que el certificado tenga una clave privada disponible.");
+                        "Asegurese de que el certificado tenga una clave privada disponible.");
                 }
                 
                 // Crear la firma usando nuestro wrapper de .NET
-                // Esto permite que Windows muestre el diálogo de contraseña si es necesario
                 IExternalSignature externalSignature = new DotNetExternalSignature(privateKey, "SHA-256");
                 
-                // Firmar el documento usando el método estándar de iText
+                // Firmar el documento usando el metodo estandar de iText7
                 // CMS = adbe.pkcs7.detached - Compatible con Adobe Reader
                 signer.SignDetached(externalSignature, chain, null, null, null, 0, PdfSigner.CryptoStandard.CMS);
             }
@@ -89,7 +82,6 @@ namespace SIGENFirmador
 
         /// <summary>
         /// Obtiene la clave privada del certificado compatible con CNG y CSP
-        /// Intenta primero los métodos modernos (CNG) y luego el método legacy (CSP)
         /// </summary>
         private static AsymmetricAlgorithm GetPrivateKeyAlgorithm(X509Certificate2 certificate)
         {
@@ -102,7 +94,7 @@ namespace SIGENFirmador
             }
             catch
             {
-                // Continuar con otros métodos
+                // Continuar con otros metodos
             }
 
             // Intentar DSA (CNG)
@@ -114,7 +106,7 @@ namespace SIGENFirmador
             }
             catch
             {
-                // Continuar con otros métodos
+                // Continuar con otros metodos
             }
 
             // Intentar ECDSA (CNG)
@@ -126,46 +118,39 @@ namespace SIGENFirmador
             }
             catch
             {
-                // Continuar con método legacy
+                // Continuar con metodo legacy
             }
 
-            // Método legacy (CSP) - como último recurso
-            // Este puede fallar con "tipo de proveedor no válido" en certificados CNG
+            // Metodo legacy (CSP) - como ultimo recurso
             try
             {
                 return certificate.PrivateKey;
             }
             catch (CryptographicException)
             {
-                // Si falla, devolver null
                 return null;
             }
         }
 
         /// <summary>
-        /// Construye la cadena de certificados completa usando IX509Certificate de iText
+        /// Construye la cadena de certificados completa usando X509Certificate de BouncyCastle
         /// </summary>
-        private static IX509Certificate[] BuildCertificateChain(X509Certificate2 certificate)
+        private static Org.BouncyCastle.X509.X509Certificate[] BuildCertificateChain(X509Certificate2 certificate)
         {
             try
             {
-                // Construir la cadena de certificados
                 X509Chain chain = new X509Chain();
                 chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
                 chain.Build(certificate);
 
-                var certList = new System.Collections.Generic.List<IX509Certificate>();
+                var certList = new System.Collections.Generic.List<Org.BouncyCastle.X509.X509Certificate>();
+                X509CertificateParser parser = new X509CertificateParser();
                 
-                // Convertir cada certificado de la cadena
                 foreach (X509ChainElement element in chain.ChainElements)
                 {
                     byte[] certBytes = element.Certificate.RawData;
-                    BCX509CertificateParser parser = new BCX509CertificateParser();
-                    BCX509Certificate bcCert = parser.ReadCertificate(certBytes);
-                    
-                    // Crear el wrapper de iText
-                    IX509Certificate iTextCert = BouncyCastleFactoryCreator.GetFactory().CreateX509Certificate(bcCert);
-                    certList.Add(iTextCert);
+                    Org.BouncyCastle.X509.X509Certificate bcCert = parser.ReadCertificate(certBytes);
+                    certList.Add(bcCert);
                 }
 
                 return certList.ToArray();
@@ -177,10 +162,8 @@ namespace SIGENFirmador
         }
 
         /// <summary>
-        /// Implementación de IExternalSignature que usa AsymmetricAlgorithm de .NET
-        /// Sin necesidad de exportar la clave privada
+        /// Implementacion de IExternalSignature que usa AsymmetricAlgorithm de .NET
         /// Compatible con certificados protegidos, Smart Cards y Tokens USB
-        /// Windows mostrará automáticamente el diálogo de PIN/contraseña si es necesario
         /// </summary>
         private class DotNetExternalSignature : IExternalSignature
         {
@@ -193,22 +176,12 @@ namespace SIGENFirmador
                 _hashAlgorithm = hashAlgorithm;
             }
 
-            public string GetDigestAlgorithmName()
+            public string GetHashAlgorithm()
             {
                 return _hashAlgorithm;
             }
 
-            public string GetSignatureAlgorithmName()
-            {
-                return _hashAlgorithm + "with" + GetAlgorithm();
-            }
-
-            public ISignatureMechanismParams GetSignatureMechanismParameters()
-            {
-                return null;
-            }
-
-            private string GetAlgorithm()
+            public string GetEncryptionAlgorithm()
             {
                 if (_privateKey is RSA || _privateKey is RSACryptoServiceProvider)
                     return "RSA";
@@ -226,7 +199,6 @@ namespace SIGENFirmador
                 {
                     if (_privateKey is RSACryptoServiceProvider rsaProvider)
                     {
-                        // Windows mostrará el diálogo de PIN aquí si es necesario
                         return rsaProvider.SignData(message, HashAlgorithmName.SHA256, 
                             RSASignaturePadding.Pkcs1);
                     }
@@ -254,17 +226,16 @@ namespace SIGENFirmador
                 }
                 catch (CryptographicException cryptoEx)
                 {
-                    // Manejar específicamente errores de contraseña/PIN
                     if (cryptoEx.Message.Contains("canceled") || cryptoEx.Message.Contains("cancelado"))
                     {
-                        throw new Exception("La operación fue cancelada por el usuario.", cryptoEx);
+                        throw new Exception("La operacion fue cancelada por el usuario.", cryptoEx);
                     }
                     else if (cryptoEx.Message.Contains("PIN") || cryptoEx.Message.Contains("password"))
                     {
-                        throw new Exception("PIN o contraseña incorrecta.", cryptoEx);
+                        throw new Exception("PIN o contrasena incorrecta.", cryptoEx);
                     }
                     
-                    throw new Exception($"Error criptográfico al firmar: {cryptoEx.Message}", cryptoEx);
+                    throw new Exception($"Error criptografico al firmar: {cryptoEx.Message}", cryptoEx);
                 }
                 catch (Exception ex)
                 {
