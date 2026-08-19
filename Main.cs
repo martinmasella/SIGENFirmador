@@ -165,8 +165,9 @@ namespace SIGENFirmador
                     reason: "Documento firmado digitalmente", 
                     location: "SIGEN");
 
-                MessageBox.Show($"PDF firmado correctamente:\n{dest}", 
+                /*MessageBox.Show($"PDF firmado correctamente:\n{dest}", 
                     "Firma exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                */
             }
             catch (Exception e)
             {
@@ -709,13 +710,15 @@ namespace SIGENFirmador
                 foreach (ListViewItem item in lvwArchivosSign.CheckedItems)
                 {
                     archivo = @tvwCarpetasSign.SelectedNode.FullPath + @"\" + item.Text;
+                    string nombreFirmado = Path.GetFileNameWithoutExtension(item.Text) + "_firmado" + Path.GetExtension(item.Text);
 
                     // Usar el nuevo método de firma con iText9 y SHA-256
-                    Sign_Remember(archivo, strCarpetaSign + @"\Firmado_" + item.Text, chain);
+                    //Copilot
+                    Sign_Remember(archivo, strCarpetaSign + @"\" + nombreFirmado, chain);
                     pgsSign.Value++;
                     Application.DoEvents();
                 }
-                
+
                 MessageBox.Show("Firmado completo", "Ok", MessageBoxButtons.OK);
             }
             catch (Exception ex)
