@@ -533,7 +533,7 @@ namespace SIGENFirmador
             iText.Layout.Element.Paragraph Titulo;
             iText.Layout.Element.Paragraph Parrafo;
 
-            Titulo = new iText.Layout.Element.Paragraph("Papeles de trabajo digitales").SetFontSize(14.0f);
+            Titulo = new iText.Layout.Element.Paragraph("Gestor de documentos digitales").SetFontSize(14.0f);
             doc.Add(Titulo);
 
             Titulo = new iText.Layout.Element.Paragraph("Lista de Archivos").SetFontSize(11.0f);
