@@ -1,6 +1,8 @@
+using iText.Forms;
 using iText.Kernel.Pdf;
 using iText.Signatures;
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
@@ -77,6 +79,98 @@ namespace SIGENFirmador
             {
                 fos?.Dispose();
                 pdfReader?.Close();
+            }
+        }
+
+        /// <summary>
+        /// Detecta y elimina todas las firmas digitales de un PDF conservando su apariencia visual (texto y/o imagen).
+        /// Retorna la cantidad de firmas digitales eliminadas (0 si el archivo no contenía firmas).
+        /// </summary>
+        public static int UnsignPdf(string inputPdfPath, string outputPdfPath)
+        {
+            if (!File.Exists(inputPdfPath))
+                throw new FileNotFoundException($"El archivo PDF no existe: {inputPdfPath}");
+
+            if (string.IsNullOrWhiteSpace(outputPdfPath))
+                throw new ArgumentException("Se debe indicar una ruta de salida válida.", nameof(outputPdfPath));
+
+            using (PdfReader checkReader = new PdfReader(inputPdfPath).SetUnethicalReading(true))
+            using (PdfDocument checkDoc = new PdfDocument(checkReader))
+            {
+                SignatureUtil checkUtil = new SignatureUtil(checkDoc);
+                if (checkUtil.GetSignatureNames().Count == 0)
+                {
+                    return 0;
+                }
+            }
+
+            string tempFile = Path.Combine(Path.GetTempPath(), $"sigen_unsign_{Guid.NewGuid():N}.pdf");
+            int removedCount = 0;
+
+            try
+            {
+                using (PdfReader reader = new PdfReader(inputPdfPath).SetUnethicalReading(true))
+                using (PdfWriter writer = new PdfWriter(tempFile))
+                using (PdfDocument pdfDoc = new PdfDocument(reader, writer))
+                {
+                    SignatureUtil sigUtil = new SignatureUtil(pdfDoc);
+                    IList<string> sigNames = sigUtil.GetSignatureNames();
+                    IList<string> blankSigNames = sigUtil.GetBlankSignatureNames();
+
+                    PdfAcroForm acroForm = PdfAcroForm.GetAcroForm(pdfDoc, false);
+                    if (acroForm != null)
+                    {
+                        // Evitar que iText regenere la apariencia para preservar intactos el texto y/o imagen originales (/AP /N)
+                        acroForm.SetGenerateAppearance(false);
+
+                        foreach (string sigName in sigNames)
+                        {
+                            acroForm.PartialFormFlattening(sigName);
+                            removedCount++;
+                        }
+
+                        if (removedCount > 0)
+                        {
+                            acroForm.FlattenFields();
+                        }
+
+                        PdfAcroForm remainingForm = PdfAcroForm.GetAcroForm(pdfDoc, false);
+                        if (remainingForm != null)
+                        {
+                            foreach (string blankName in blankSigNames)
+                            {
+                                remainingForm.RemoveField(blankName);
+                            }
+
+                            remainingForm.GetPdfObject().Remove(PdfName.SigFlags);
+                        }
+                    }
+
+                    // Limpiar permisos de certificación (DocMDP/UR3) y almacén LTV (DSS) para permitir volver a firmar sin advertencias
+                    PdfDictionary catalogDict = pdfDoc.GetCatalog().GetPdfObject();
+                    catalogDict.Remove(PdfName.Perms);
+                    catalogDict.Remove(new PdfName("DSS"));
+                }
+
+                string outputDir = Path.GetDirectoryName(outputPdfPath);
+                if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
+                {
+                    Directory.CreateDirectory(outputDir);
+                }
+
+                File.Copy(tempFile, outputPdfPath, overwrite: true);
+                return removedCount;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al quitar las firmas del PDF: {ex.Message}", ex);
+            }
+            finally
+            {
+                if (File.Exists(tempFile))
+                {
+                    try { File.Delete(tempFile); } catch { }
+                }
             }
         }
 

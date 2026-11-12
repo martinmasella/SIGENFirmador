@@ -1107,13 +1107,104 @@ namespace SIGENFirmador
             pdfDoc.Close();
         }
 
-        private void lnkSourceCode_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://github.com/martinmasella/SIGENFirmador");
-        }
-    }
-    
-    class MySplitter : PdfSplitter
+		private void lnkSourceCode_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("https://github.com/martinmasella/SIGENFirmador");
+		}
+
+		private void btnUnSign_Click(object sender, EventArgs e)
+		{
+			//La idea de esta funcionalidad es que el usuario pueda quitar la/las firma/s de un PDF firmado pero sin quitar el dibujo, para poder volver a firmarlo eventualmente con otro certificado.
+			try
+			{
+				if (tvwCarpetasSign.SelectedNode == null || lvwArchivosSign.CheckedItems.Count == 0)
+				{
+					MessageBox.Show("Debe seleccionar al menos un archivo PDF para quitar la firma.",
+						"Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					return;
+				}
+
+				if (dlgCarpetaSign.ShowDialog() == DialogResult.OK)
+				{
+					strCarpetaSign = dlgCarpetaSign.SelectedPath;
+				}
+				else
+				{
+					return;
+				}
+
+				string carpetaOrigen = (tvwCarpetasSign.SelectedNode.Tag as DirectoryInfo)?.FullName
+					?? tvwCarpetasSign.SelectedNode.FullPath;
+
+				pgsSign.Minimum = 0;
+				pgsSign.Value = 0;
+				pgsSign.Maximum = lvwArchivosSign.CheckedItems.Count;
+				pgsSign.Visible = true;
+
+				int archivosProcesados = 0;
+				int totalFirmasQuitadas = 0;
+				int archivosSinFirma = 0;
+				List<string> errores = new List<string>();
+
+				foreach (ListViewItem item in lvwArchivosSign.CheckedItems)
+				{
+					string archivoOrigen = Path.Combine(carpetaOrigen, item.Text);
+					string nombreSinFirma = Path.GetFileNameWithoutExtension(item.Text) + "_sin_firma" + Path.GetExtension(item.Text);
+					string archivoDestino = Path.Combine(strCarpetaSign, nombreSinFirma);
+
+					try
+					{
+						int firmasQuitadas = PdfSigningService.UnsignPdf(archivoOrigen, archivoDestino);
+						if (firmasQuitadas > 0)
+						{
+							archivosProcesados++;
+							totalFirmasQuitadas += firmasQuitadas;
+						}
+						else
+						{
+							archivosSinFirma++;
+						}
+					}
+					catch (Exception exArchivo)
+					{
+						errores.Add($"{item.Text}: {exArchivo.Message}");
+					}
+
+					pgsSign.Value++;
+					Application.DoEvents();
+				}
+
+				StringBuilder resumen = new StringBuilder();
+				resumen.AppendLine($"Archivos desfirmados: {archivosProcesados} ({totalFirmasQuitadas} firma(s) eliminada(s)).");
+				if (archivosSinFirma > 0)
+				{
+					resumen.AppendLine($"Archivos omitidos por no poseer firmas digitales: {archivosSinFirma}.");
+				}
+				if (errores.Count > 0)
+				{
+					resumen.AppendLine();
+					resumen.AppendLine("Errores:");
+					foreach (string err in errores)
+					{
+						resumen.AppendLine($"- {err}");
+					}
+				}
+
+				MessageBoxIcon icono = errores.Count > 0
+					? MessageBoxIcon.Warning
+					: MessageBoxIcon.Information;
+
+				MessageBox.Show(resumen.ToString().TrimEnd(), "Quitar firma", MessageBoxButtons.OK, icono);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"Error al quitar firmas: {ex.Message}\n\nDetalles: {ex.InnerException?.Message}",
+					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+	}
+
+	class MySplitter : PdfSplitter
     {
         public MySplitter(iText.Kernel.Pdf.PdfDocument pdfDocument) : base(pdfDocument)
         {
