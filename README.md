@@ -5,8 +5,9 @@ Utilidad para tratamiento de archivos PDF
 
 Este utilitario permite manipular archivos PDF utilizando las librerías iText y Tesseract.  
 Puede:  
--Firmar digitalmente uno o varios archivos en lote  
 -Empaquetar archivos dentro de un único PDF  
+-Firmar digitalmente uno o varios archivos en lote
+-Quitar la firma digital de uno o varios archivos en lote
 -Fusionar varios PDFs en uno  
 -Dividir PDFs  
 -Ejecutar el proceso de OCR  
@@ -16,7 +17,7 @@ En el Sector Público Nacional existe normativa que impide colocar información 
 
 ## 🛠 Instalación
 
-Instalar el Visual Studio 2022 Community Edition (gratuito) y actualizar los paquetes NuGet.
+Instalar el Visual Studio 2026 Community Edition (gratuito) y actualizar los paquetes NuGet.
 
 ## 🎮 Uso 
 
