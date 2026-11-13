@@ -75,6 +75,7 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.txtOriginalOCR = new System.Windows.Forms.TextBox();
 			this.panelFirmador = new SIGENFirmador.PanelFirm();
+			this.btnUnSign = new SIGENFirmador.tessdata.RoundBtn();
 			this.label10 = new System.Windows.Forms.Label();
 			this.chkSelSign = new System.Windows.Forms.CheckBox();
 			this.label9 = new System.Windows.Forms.Label();
@@ -111,7 +112,6 @@
 			this.chkAbrirPaquete = new System.Windows.Forms.CheckBox();
 			this.cboDrivesPack = new System.Windows.Forms.ComboBox();
 			this.chkFirmarPaquete = new System.Windows.Forms.CheckBox();
-			this.btnUnSign = new SIGENFirmador.tessdata.RoundBtn();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -177,6 +177,8 @@
 			this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pictureBox4.TabIndex = 9;
 			this.pictureBox4.TabStop = false;
+			this.pictureBox4.Click += new System.EventHandler(this.pictureBox4_Click);
+			this.pictureBox4.DoubleClick += new System.EventHandler(this.pictureBox4_DoubleClick);
 			// 
 			// dlgArchivoFus
 			// 
@@ -610,6 +612,21 @@
 			this.panelFirmador.Size = new System.Drawing.Size(814, 443);
 			this.panelFirmador.TabIndex = 26;
 			// 
+			// btnUnSign
+			// 
+			this.btnUnSign.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(93)))), ((int)(((byte)(23)))), ((int)(((byte)(175)))));
+			this.btnUnSign.FlatAppearance.BorderSize = 0;
+			this.btnUnSign.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnUnSign.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.btnUnSign.ForeColor = System.Drawing.Color.White;
+			this.btnUnSign.Location = new System.Drawing.Point(656, 374);
+			this.btnUnSign.Name = "btnUnSign";
+			this.btnUnSign.Size = new System.Drawing.Size(136, 40);
+			this.btnUnSign.TabIndex = 27;
+			this.btnUnSign.Text = "Quitar firma";
+			this.btnUnSign.UseVisualStyleBackColor = false;
+			this.btnUnSign.Click += new System.EventHandler(this.btnUnSign_Click);
+			// 
 			// label10
 			// 
 			this.label10.AutoSize = true;
@@ -1000,21 +1017,6 @@
 			this.chkFirmarPaquete.TabIndex = 14;
 			this.chkFirmarPaquete.Text = "Firmar paquete";
 			this.chkFirmarPaquete.UseVisualStyleBackColor = true;
-			// 
-			// btnUnSign
-			// 
-			this.btnUnSign.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(93)))), ((int)(((byte)(23)))), ((int)(((byte)(175)))));
-			this.btnUnSign.FlatAppearance.BorderSize = 0;
-			this.btnUnSign.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnUnSign.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnUnSign.ForeColor = System.Drawing.Color.White;
-			this.btnUnSign.Location = new System.Drawing.Point(656, 374);
-			this.btnUnSign.Name = "btnUnSign";
-			this.btnUnSign.Size = new System.Drawing.Size(136, 40);
-			this.btnUnSign.TabIndex = 27;
-			this.btnUnSign.Text = "Quitar firma";
-			this.btnUnSign.UseVisualStyleBackColor = false;
-			this.btnUnSign.Click += new System.EventHandler(this.btnUnSign_Click);
 			// 
 			// Main
 			// 

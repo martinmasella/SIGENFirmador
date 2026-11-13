@@ -25,6 +25,7 @@ using iText.Kernel.Pdf.Canvas.Draw;
 using iText.Signatures;
 using Org.BouncyCastle.X509;
 using BCX509Certificate = Org.BouncyCastle.X509.X509Certificate;
+using Org.BouncyCastle.Asn1.Crmf;
 
 namespace SIGENFirmador
 {
@@ -1201,6 +1202,16 @@ namespace SIGENFirmador
 				MessageBox.Show($"Error al quitar firmas: {ex.Message}\n\nDetalles: {ex.InnerException?.Message}",
 					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
+		}
+
+		private void pictureBox4_Click(object sender, EventArgs e)
+		{
+            
+		}
+
+		private void pictureBox4_DoubleClick(object sender, EventArgs e)
+		{
+            MessageBox.Show("Desarrollado en SIGEN por:\n\n-Fernando Mollo\n-Martín Masella\n-Magalí Raymudo\n-Martín Capo\n-Juan Mango", "SIGEN", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 	}
 
