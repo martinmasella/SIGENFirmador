@@ -1211,7 +1211,7 @@ namespace SIGENFirmador
 
 		private void pictureBox4_DoubleClick(object sender, EventArgs e)
 		{
-            MessageBox.Show("Desarrollado en SIGEN por:\n\n-Fernando Mollo\n-Martín Masella\n-Magalí Raymudo\n-Martín Capo\n-Juan Mango", "SIGEN", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Desarrollado en SIGEN por:\n\n-Fernando Mollo\n-Martín Masella\n-Magalí Celeste Raymudo\n-Martín Capo\n-Juan Mango", "SIGEN", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 	}
 
